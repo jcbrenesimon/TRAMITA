@@ -22,7 +22,7 @@
 | `20261011_05_busqueda_y_dashboard.sql` | ✅ ejecutada | Búsqueda paginada y dashboard en hora de Costa Rica |
 | `20261011_06_registro_errores.sql` | ✅ ejecutada | Tabla `client_errors` y `log_client_error()` |
 | `20261011_07_contenido_e_imagenes.sql` | ✅ ejecutada | Privacidad, términos, promesas, imágenes de servicios, limpieza de claves viejas |
-| `20261011_08_imagenes_servicios_lectura.sql` | ⏳ | Corrige la subida de imágenes de servicios (faltaba el permiso de lectura) |
+| `20261011_08_imagenes_servicios_lectura.sql` | ✅ ejecutada | Corrige la subida de imágenes de servicios (faltaba el permiso de lectura) |
 
 ### Cómo ejecutarlas
 
