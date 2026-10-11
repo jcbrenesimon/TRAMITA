@@ -8,4 +8,3 @@ function timeAgo(date) {
   const days = Math.floor(hrs / 24);
   return `hace ${days} día${days > 1 ? 's' : ''}`;
 }
-

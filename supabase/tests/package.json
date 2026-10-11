@@ -1,0 +1,8 @@
+{
+  "name": "tramita-db-tests",
+  "private": true,
+  "type": "module",
+  "description": "Pruebas de las migraciones de Supabase sobre Postgres local (PGlite)",
+  "scripts": { "test": "node test_migrations.mjs" },
+  "devDependencies": { "@electric-sql/pglite": "0.3.16" }
+}

@@ -1,31 +1,46 @@
 /* ==================== TOAST ==================== */
 .toast {
   position: fixed; top: 20px; left: 50%;
-  transform: translateX(-50%) translateY(-120%);
+  transform: translateX(-50%) translateY(-150%);
   background: var(--navy); color: var(--cream);
   padding: 12px 20px; border-radius: var(--radius);
   font-size: 14px; z-index: 300;
   transition: transform .3s cubic-bezier(.2,.8,.2,1);
   box-shadow: var(--shadow-lg);
   display: flex; align-items: center; gap: 10px;
-  max-width: calc(100vw - 40px);
+  width: max-content; max-width: calc(100vw - 32px);
 }
+.toast svg { flex-shrink: 0; }
 .toast.show { transform: translateX(-50%) translateY(0); }
 .toast.error { background: var(--danger); }
 
 /* ==================== LOADING ==================== */
 .spinner {
-  display: inline-block;
+  display: inline-block; flex-shrink: 0;
   width: 16px; height: 16px;
   border: 2px solid var(--cream);
   border-top-color: transparent;
   border-radius: 50%;
   animation: spin .7s linear infinite;
 }
+.spinner-dark { border-color: var(--navy); border-top-color: transparent; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 .page-loading {
-  display: flex; align-items: center; justify-content: center;
+  grid-column: 1 / -1;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
   padding: 60px 20px; color: var(--ink-subtle);
 }
 
+/* ==================== AVISOS ==================== */
+.banner {
+  padding: 10px 14px; border-radius: var(--radius);
+  margin: 10px 0; font-size: 13px;
+}
+.banner-sm { padding: 8px 14px; font-size: 12.5px; }
+.banner-action { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.banner-info { background: var(--info-bg); color: var(--info); }
+.banner-warning { background: var(--warning-bg); color: var(--warning); }
+.banner-danger { background: var(--danger-bg); color: var(--danger); }
+.banner-success { background: var(--success-bg); color: var(--success); }
+.banner-muted { background: var(--cream-warm); color: var(--ink-muted); }

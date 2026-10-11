@@ -1,110 +1,74 @@
-// ============ ÓRDENES ============
+// ============ ÓRDENES (búsqueda y paginación en el servidor) ============
+const ORDER_FILTERS = [
+  ['all', 'Todas'], ['pendiente_de_pago', 'Pendientes'], ['pagado', 'Pagadas'], ['en_proceso', 'En gestión'],
+  ['pendiente_de_documentos', 'Falta docs'], ['completado', 'Completadas'], ['entregado', 'Entregadas'], ['cancelado', 'Canceladas'],
+];
+
 async function renderOrders() {
   setPageTitle('Órdenes');
   $('#content').innerHTML = `
-    <div style="margin-bottom:20px">
-      <p style="color:var(--ink-muted)">Todas las órdenes del sistema.</p>
-    </div>
-    <div style="margin-bottom:14px">
-      <input type="text" id="ordersSearchInput" placeholder="Buscar por referencia, cliente, cédula, teléfono..." value="${ordersSearch}"
-        style="width:100%;max-width:420px;padding:10px 14px;border:1px solid var(--line);border-radius:var(--radius);background:var(--paper)"
-        onkeyup="if(event.key==='Enter'){ordersSearch=this.value;loadOrders()}" />
-    </div>
-    <div class="filters" id="ordersFilters"></div>
-    <div id="ordersList"></div>
+    <div class="view-intro"><p>Todas las órdenes del sistema.</p></div>
+    <form class="search-row" role="search" onsubmit="event.preventDefault();ordersSearch=$('#ordersSearchInput').value.trim();ordersPage=0;loadOrders()">
+      <label for="ordersSearchInput" class="sr-only">Buscar órdenes</label>
+      <input type="search" id="ordersSearchInput" class="search-input" placeholder="Referencia, cliente, cédula, teléfono o correo" value="${esc(ordersSearch)}">
+      <button class="btn btn-outline btn-sm" type="submit">Buscar</button>
+      ${ordersSearch ? `<button class="btn btn-ghost btn-sm" type="button" onclick="ordersSearch='';ordersPage=0;$('#globalSearch').value='';renderOrders()">Limpiar</button>` : ''}
+    </form>
+    <div class="filters" id="ordersFilters" role="toolbar" aria-label="Filtrar órdenes"></div>
+    <div id="ordersList">${LOADING}</div>
   `;
   await loadOrders();
 }
 
 async function loadOrders() {
-  // Filtros
-  const filters = [
-    ['all', 'Todas'],
-    ['pendiente_de_pago', 'Pendientes'],
-    ['pagado', 'Pagadas'],
-    ['en_proceso', 'En gestión'],
-    ['pendiente_de_documentos', 'Falta docs'],
-    ['completado', 'Completadas'],
-    ['cancelado', 'Canceladas'],
-  ];
-  $('#ordersFilters').innerHTML = filters.map(([k,label]) =>
-    `<button class="chip ${ordersFilter === k ? 'active' : ''}" onclick="filterOrders('${k}')">${label}</button>`
+  $('#ordersFilters').innerHTML = ORDER_FILTERS.map(([k, label]) =>
+    `<button type="button" class="chip ${ordersFilter === k ? 'active' : ''}" aria-pressed="${ordersFilter === k}" onclick="filterOrders('${k}')">${label}</button>`
   ).join('');
+  const list = $('#ordersList');
+  list.innerHTML = LOADING;
 
-  $('#ordersList').innerHTML = '<div class="page-loading"><span class="spinner" style="border-color:var(--navy);border-top-color:transparent"></span></div>';
-
-  let query = sb.from('orders')
-    .select('*, users_profile!orders_user_id_fkey(name, phone, email, id_card), order_items(service_name,service_price), payment_receipts(id,status)')
-    .order('created_at', { ascending: false })
-    .limit(200);
-
-  if (ordersFilter !== 'all') query = query.eq('order_status', ordersFilter);
-
-  const { data, error } = await query;
-  if (error) { $('#ordersList').innerHTML = `<div class="empty"><p>Error: ${error.message}</p></div>`; return; }
-
-  // Aplicar búsqueda local
-  let filtered = data || [];
-  if (ordersSearch) {
-    const q = ordersSearch.toLowerCase();
-    filtered = filtered.filter(o => {
-      const up = o.users_profile;
-      return o.reference?.toLowerCase().includes(q)
-        || up?.name?.toLowerCase().includes(q)
-        || up?.id_card?.toLowerCase().includes(q)
-        || up?.phone?.toLowerCase().includes(q)
-        || up?.email?.toLowerCase().includes(q);
-    });
-  }
-
-  if (filtered.length === 0) {
-    $('#ordersList').innerHTML = `<div class="empty"><h3>Sin resultados</h3><p>No se encontraron órdenes con los filtros aplicados.</p></div>`;
+  const { data, error } = await sb.rpc('admin_search_orders', {
+    p_search: ordersSearch, p_status: ordersFilter, p_limit: PAGE_SIZE, p_offset: ordersPage * PAGE_SIZE,
+  });
+  if (currentView !== 'orders') return;
+  const err = rpcError(error, data);
+  if (err) { list.innerHTML = emptyState('Error', err); return; }
+  if (!data.total) {
+    list.innerHTML = emptyState('Sin resultados', 'No se encontraron órdenes con los filtros aplicados.');
     return;
   }
 
-  $('#ordersList').innerHTML = `
+  list.innerHTML = `
     <div class="data-card">
       <div class="data-head">
-        <h3>${filtered.length} órden${filtered.length !== 1 ? 'es' : ''}</h3>
-        <span class="meta">Click en una fila para ver detalle</span>
+        <h3>${data.total} ${data.total === 1 ? 'orden' : 'órdenes'}</h3>
+        <span class="meta">Toque una fila para ver el detalle</span>
       </div>
-      <div class="table-scroll">
-        <table>
-          <thead>
-            <tr><th>Ref.</th><th>Cliente</th><th>Servicios</th><th>Estado</th><th>Pago</th><th>Monto</th><th>Fecha</th></tr>
-          </thead>
-          <tbody>
-            ${filtered.map(o => {
-              const os = ORDER_LABELS[o.order_status] || {text:o.order_status,cls:'badge-muted'};
-              const hasReceipt = o.payment_receipts && o.payment_receipts.length > 0;
-              const lastReceipt = hasReceipt ? o.payment_receipts[o.payment_receipts.length-1] : null;
-              let payBadge;
-              if (lastReceipt) {
-                const rl = RECEIPT_LABELS[lastReceipt.status];
-                payBadge = `<span class="badge ${rl.cls}">📄 ${rl.text}</span>`;
-              } else {
-                const pl = PAY_LABELS[o.payment_status];
-                payBadge = `<span class="badge ${pl.cls}">${pl.text}</span>`;
-              }
-              const svc = (o.order_items || []).map(i => i.service_name).join(', ');
-              return `
-                <tr class="clickable" onclick="openOrderModal('${o.id}')">
-                  <td class="mono text-navy">${o.reference}</td>
-                  <td>${o.users_profile?.name || '—'}<br><span class="text-muted" style="font-size:11.5px">${o.users_profile?.phone || ''}</span></td>
-                  <td class="text-muted" style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${svc}</td>
-                  <td><span class="badge ${os.cls}">${os.text}</span></td>
-                  <td>${payBadge}</td>
-                  <td class="text-navy">${fmt(o.total)}</td>
-                  <td class="text-muted">${fmtDate(o.created_at)}</td>
-                </tr>
-              `;
-            }).join('')}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  `;
+      ${dataTable(
+        [{ label: 'Ref.' }, { label: 'Cliente' }, { label: 'Servicios' }, { label: 'Estado' }, { label: 'Pago' }, { label: 'Monto' }, { label: 'Fecha' }],
+        data.rows.map(o => {
+          const receipts = o.payment_receipts || [];
+          const last = receipts[receipts.length - 1];
+          const pay = last && o.payment_status === 'pending'
+            ? `<span class="badge ${RECEIPT_LABELS[last.status]?.cls}">📄 ${esc(RECEIPT_LABELS[last.status]?.text)}</span>`
+            : badge(PAY_LABELS, o.payment_status);
+          const svc = (o.order_items || []).map(i => i.service_name + (i.quantity > 1 ? ` ×${i.quantity}` : '')).join(', ');
+          return {
+            open: ['order', o.id],
+            cells: [
+              `<span class="mono text-navy">${esc(o.reference)}</span>`,
+              `${esc(o.users_profile?.name || '—')}<span class="cell-sub">${esc(o.users_profile?.phone || '')}</span>`,
+              `<span class="text-muted truncate" title="${esc(svc)}">${esc(svc)}</span>`,
+              badge(ORDER_LABELS, o.order_status),
+              pay,
+              `<span class="text-navy">${fmt(o.total)}</span>`,
+              `<span class="text-muted">${esc(fmtDate(o.created_at))}</span>`,
+            ],
+          };
+        }))}
+      ${pager(data.total, ordersPage, 'goOrdersPage')}
+    </div>`;
 }
 
-function filterOrders(k) { ordersFilter = k; loadOrders(); }
-
+function filterOrders(k) { ordersFilter = k; ordersPage = 0; loadOrders(); }
+function goOrdersPage(p) { ordersPage = Math.max(0, p); loadOrders(); window.scrollTo(0, 0); }

@@ -1,8 +1,9 @@
 /* ==================== LAYOUT ==================== */
-.container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-.container-narrow { max-width: 720px; margin: 0 auto; padding: 0 20px; }
+.container { max-width: 1200px; margin: 0 auto; padding: 0 var(--gutter); }
+.container-narrow { max-width: 720px; margin: 0 auto; padding: 0 var(--gutter); }
+.page-pad { padding-top: 40px; padding-bottom: 60px; }
+.page-pad-sm { padding-top: 28px; padding-bottom: 60px; }
 
 .page { display: none; animation: fadeIn .3s ease; }
 .page.active { display: block; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-

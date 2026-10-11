@@ -1,0 +1,55 @@
+/* ============ RESPONSIVE ============
+   Base: celular. Tablas → tarjetas por debajo de 760 px.
+   Escritorio (≥ 1024 px): sidebar fija y búsqueda en la barra superior.
+   ==================================== */
+
+/* Tablas como tarjetas en pantallas angostas */
+@media (max-width: 760px) {
+  .rtable thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .rtable, .rtable tbody, .rtable tr, .rtable td { display: block; width: 100%; }
+  .rtable tr { padding: 12px 14px; border-bottom: 1px solid var(--line); }
+  .rtable tr:last-child { border-bottom: none; }
+  .rtable td {
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    padding: 4px 0; border: none; text-align: right;
+  }
+  .rtable td::before {
+    content: attr(data-label); flex-shrink: 0;
+    font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--ink-subtle); font-weight: 600; text-align: left;
+  }
+  .rtable td[data-label=""]::before { content: none; }
+  .rtable td[data-label=""] { justify-content: flex-end; }
+  .rtable td > .cell { min-width: 0; text-align: right; }
+  .rtable .cell-sub { text-align: right; }
+  .rtable .truncate { max-width: 60vw; }
+  .rtable .svc-cell { justify-content: flex-end; text-align: right; }
+  tr.clickable:hover td { background: transparent; }
+  tr.clickable:active { background: var(--cream); }
+}
+
+@media (max-width: 420px) {
+  .content { padding: 16px 12px 48px; }
+  .kpi-grid { gap: 8px; }
+  .kpi-card { padding: 14px; }
+  .greeting { font-size: 24px; }
+  .section-head h2 { font-size: 19px; }
+  .data-head { padding: 14px; }
+  .pager { flex-wrap: wrap; justify-content: center; }
+}
+
+@media (min-width: 640px) {
+  .topbar { padding: 14px 20px; flex-wrap: nowrap; }
+  .topbar-search { flex: 0 1 380px; }
+  .content { padding: 24px 20px 60px; }
+}
+
+@media (min-width: 1024px) {
+  .app.active { display: grid; grid-template-columns: var(--sidebar-w) minmax(0, 1fr); }
+  .sidebar {
+    position: sticky; transform: none; visibility: visible;
+    width: var(--sidebar-w); box-shadow: none; z-index: 1;
+  }
+  .sidebar-backdrop, .sidebar-close, .menu-toggle { display: none; }
+  .content { padding: 28px 32px 60px; }
+}

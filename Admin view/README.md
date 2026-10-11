@@ -1,52 +1,66 @@
 # Tramitá — Panel administrativo
 
-Entrada: `tramita-admin.html` (solo el HTML: login, acceso restringido y el shell del panel). Estilos y lógica están separados por responsabilidad.
+Entrada: `tramita-admin.html` (login, acceso restringido y el shell del panel). En producción `deploy/build.py` une los estilos y scripts en `app.<hash>.css` y `app.<hash>.js`.
+
+Cada vista vive en la URL (`#dashboard`, `#orders`, `#users`, `#settings`, `#errors`…): recargar no la pierde.
+
+## Seguridad
+
+- Los permisos reales están en la base de datos (`staff_profile()`, RLS); ocultar un botón en el panel es solo comodidad.
+- La verificación en dos pasos está desactivada por ahora. La base de datos ya la soporta (`settings.require_staff_mfa`); para activarla en el futuro hay que agregar la pantalla de código al panel y poner ese valor en `true`.
 
 ## Estructura
 
 ```
 Admin view/
-├── tramita-admin.html        Login, acceso restringido, sidebar, topbar, contenedor de vistas
-├── css/                      Se cargan en este orden (importa para la cascada)
-│   ├── base.css              Variables (:root), reset, tipografía
+├── tramita-admin.html
+├── favicon.svg
+├── css/                      Se cargan en este orden
+│   ├── base.css              Variables, reset, accesibilidad, utilidades
 │   ├── login.css             Pantalla de ingreso
-│   ├── layout.css            Sidebar, topbar, contenido, menú móvil
+│   ├── layout.css            Sidebar (cajón en celular), topbar, contenido
 │   ├── buttons.css           Botones
-│   ├── dashboard.css         Tarjetas KPI
-│   ├── components.css        Encabezado de sección, tablas, badges, filtros, estados vacíos
-│   ├── modal.css             Ventanas modales
-│   ├── forms.css             Formularios
-│   ├── order-detail.css      Detalle de orden y comprobante
-│   ├── feedback.css          Loading y toast
-│   └── access-denied.css     Pantalla "Acceso restringido"
-└── js/                       Scripts clásicos (no módulos), cargados en este orden
-    ├── core/config.js        URL y key de Supabase, cliente `sb`
-    ├── core/state.js         Estado global (usuario, vista actual, filtros)
-    ├── utils/helpers.js      $, $$, fmt, fmtDate, fmtDateTime, fmtDateOnly, toast, getInitials
-    ├── features/auth.js      checkSession, login/denied/app, doLogin, doLogout
-    ├── core/router.js        go(view), sidebar, título, buscador global
-    ├── features/dashboard.js KPIs, "Requieren su atención", actividad reciente
+│   ├── dashboard.css         Encabezados de vista y KPIs
+│   ├── components.css        Tablas, paginación, badges, filtros, búsqueda, estados vacíos
+│   ├── modal.css             Modales (pantalla completa en celular)
+│   ├── forms.css             Formularios, imagen e ícono de servicio
+│   ├── order-detail.css      Detalle de orden, bitácora y comprobantes
+│   ├── feedback.css          Loading, toast y avisos
+│   ├── access-denied.css     Pantalla "Acceso restringido"
+│   └── responsive.css        Tablas → tarjetas (≤760), escritorio (≥1024) — siempre de último
+└── js/                       Scripts clásicos (no módulos)
+    ├── core/config.js        Supabase y constantes
+    ├── core/state.js         Estado global, isAdmin(), canOperate()
+    ├── utils/helpers.js      esc(), safeUrl, toast, rpcError, filas clicables accesibles
+    ├── utils/errors.js       Envía los errores de JS a log_client_error()
+    ├── utils/icons.js        Íconos de servicio (mismas claves que la web)
     ├── utils/time.js         timeAgo
-    ├── core/labels.js        ORDER_LABELS, PAY_LABELS, RECEIPT_LABELS, ROLE_LABELS
-    ├── features/receipts.js        Lista y filtros de comprobantes
-    ├── features/receipt-review.js  Ver, aprobar y rechazar comprobante
-    ├── features/orders.js          Lista, filtros y búsqueda de órdenes
-    ├── features/order-detail.js    Detalle, cambio de estado, notas de bitácora
-    ├── utils/whatsapp.js           openWA(phone, message)
-    ├── features/users.js           Lista, filtros y creación de usuarios
-    ├── features/user-detail.js     Ficha del usuario y edición
-    ├── features/user-actions.js    Resetear contraseña, activar/desactivar, eliminar, rol, puntos
-    ├── features/services.js        CRUD de servicios
-    ├── features/categories.js      CRUD de categorías
-    ├── features/payment-accounts.js CRUD de cuentas bancarias
-    ├── features/coupons.js         CRUD de cupones
-    ├── features/settings.js        Configuración del negocio y programa de puntos
-    ├── ui/modal.js                 showModal, closeModal, closeModalBackdrop
-    └── app.js                init(): arranque y auto-refresh del dashboard (siempre de último)
+    ├── utils/whatsapp.js     openWA(teléfono, mensaje)
+    ├── core/labels.js        Etiquetas de estados, roles, métodos de pago
+    ├── ui/modal.js           Modal accesible (Escape, foco)
+    ├── ui/table.js           dataTable() responsive y paginación
+    ├── features/auth.js      Sesión, roles, login
+    ├── core/router.js        Vistas por URL, sidebar, buscador global
+    ├── features/dashboard.js       KPIs y actividad
+    ├── features/receipts.js        Lista de comprobantes
+    ├── features/receipt-review.js  Aprobar / rechazar (+ WhatsApp y correo)
+    ├── features/orders.js          Búsqueda paginada (admin_search_orders)
+    ├── features/order-detail.js    Detalle, estados, cancelación, bitácora
+    ├── features/users.js           Búsqueda paginada (admin_search_users) y creación
+    ├── features/user-detail.js     Ficha y edición
+    ├── features/user-actions.js    Contraseña, activar, eliminar, rol, puntos
+    ├── features/services.js        Servicios, ícono e imagen
+    ├── features/categories.js      Categorías
+    ├── features/payment-accounts.js Cuentas bancarias
+    ├── features/coupons.js         Cupones
+    ├── features/settings.js        Datos del negocio, textos legales, puntos
+    ├── features/errors.js          Registro de errores de las apps
+    └── app.js                Arranque (siempre de último)
 ```
 
 ## Reglas para mantenerlo
 
-- Los scripts son **clásicos** a propósito: el HTML generado usa `onclick="openOrderModal(...)"` y similares, que necesitan funciones globales. No convertir a `type="module"` sin migrar esos handlers.
-- El orden de `<script>` importa: `config` → `state` → resto → `app.js` al final.
+- **Todo dato de la base de datos que entre a `innerHTML` pasa por `esc()`.** Títulos de `showModal()` se escapan solos.
+- Las acciones usan funciones `admin_*` (nunca `update`/`insert` directo a las tablas: la base de datos lo bloquea).
+- Para tablas use `dataTable()`: se convierten en tarjetas en el celular.
 - Para probar en local: `python -m http.server` dentro de esta carpeta.

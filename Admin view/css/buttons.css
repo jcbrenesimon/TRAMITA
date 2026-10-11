@@ -2,7 +2,7 @@
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 7px;
   padding: 10px 16px; border-radius: var(--radius);
-  font-weight: 500; font-size: 13.5px; letter-spacing: 0.01em;
+  font-weight: 500; font-size: 13.5px; letter-spacing: 0.01em; line-height: 1.2;
   transition: all .15s; cursor: pointer; border: 1px solid transparent;
   white-space: nowrap;
 }
@@ -17,9 +17,11 @@
 .btn-success:hover:not(:disabled) { opacity: 0.9; }
 .btn-danger { background: var(--danger); color: white; }
 .btn-danger:hover:not(:disabled) { opacity: 0.9; }
-.btn-wa { background: #25D366; color: white; }
-.btn-wa:hover:not(:disabled) { background: #1DA851; }
+.btn-warning-outline { background: transparent; color: var(--warning); border-color: var(--warning); }
+.btn-warning-outline:hover:not(:disabled) { background: var(--warning); color: white; }
+.btn-wa { background: #1E8E4C; color: white; }
+.btn-wa:hover:not(:disabled) { background: #17763F; }
 .btn-block { width: 100%; }
 .btn-sm { padding: 7px 12px; font-size: 12.5px; }
+.btn-xs { padding: 3px 10px; font-size: 11px; }
 .btn-lg { padding: 13px 22px; font-size: 14.5px; }
-

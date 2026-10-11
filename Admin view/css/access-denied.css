@@ -1,7 +1,6 @@
 /* ============ ACCESO RESTRINGIDO ============ */
-.access-denied {
-  text-align: center; padding: 60px 24px;
-}
+.access-denied { text-align: center; padding: 40px 12px; }
+.access-denied svg { color: var(--danger); margin: 0 auto; display: block; }
 .access-denied h2 {
   font-family: 'Fraunces', serif; font-size: 28px;
   color: var(--navy); margin: 14px 0 6px;

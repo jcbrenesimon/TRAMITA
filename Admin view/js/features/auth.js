@@ -1,13 +1,23 @@
 // ============ AUTH ============
+const STAFF_ROLES = ['admin', 'operador', 'consulta'];
+
+function showScreen(name) {
+  show('#loginWrap', name === 'login');
+  show('#deniedWrap', name === 'denied');
+  $('#app').classList.toggle('active', name === 'app');
+}
+
+function show(sel, visible) {
+  const el = $(sel);
+  if (el) el.hidden = !visible;
+}
+
 async function checkSession() {
   const { data: { session } } = await sb.auth.getSession();
   currentUser = session?.user || null;
   currentProfile = null;
 
-  if (!currentUser) {
-    showLogin();
-    return false;
-  }
+  if (!currentUser) { showScreen('login'); return false; }
 
   const { data: profile, error } = await sb.from('users_profile')
     .select('*')
@@ -16,15 +26,13 @@ async function checkSession() {
 
   if (error || !profile) {
     await sb.auth.signOut();
-    showLogin();
+    showScreen('login');
     return false;
   }
-
   currentProfile = profile;
 
-  // Validar rol de staff
-  if (!['admin','operador','consulta'].includes(profile.role)) {
-    showDenied();
+  if (!STAFF_ROLES.includes(profile.role) || !profile.active) {
+    showScreen('denied');
     return false;
   }
 
@@ -32,53 +40,28 @@ async function checkSession() {
   return true;
 }
 
-function showLogin() {
-  $('#loginWrap').style.display = 'flex';
-  $('#deniedWrap').style.display = 'none';
-  $('#app').classList.remove('active');
-}
-
-function showDenied() {
-  $('#loginWrap').style.display = 'none';
-  $('#deniedWrap').style.display = 'flex';
-  $('#app').classList.remove('active');
-}
-
 function showApp() {
-  $('#loginWrap').style.display = 'none';
-  $('#deniedWrap').style.display = 'none';
-  $('#app').classList.add('active');
-
-  // Llenar info de admin en sidebar
+  showScreen('app');
   $('#sidebarAvatar').textContent = getInitials(currentProfile.name || currentProfile.email);
   $('#sidebarName').textContent = currentProfile.name || currentProfile.email.split('@')[0];
-  $('#sidebarRole').textContent = currentProfile.role;
-
-  // Cargar primera vista
-  go('dashboard');
+  $('#sidebarRole').textContent = ROLE_LABELS[currentProfile.role]?.text || currentProfile.role;
+  routeFromHash();
 }
 
 async function doLogin(e) {
   e.preventDefault();
   const btn = $('#loginBtn');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Ingresando...';
-  $('#loginError').style.display = 'none';
+  setBusy(btn, true, 'Ingresando...');
+  setError('#loginError', '');
 
   const { error } = await sb.auth.signInWithPassword({
     email: $('#loginEmail').value.trim(),
     password: $('#loginPassword').value,
   });
+  setBusy(btn, false, 'Ingresar al panel');
 
-  btn.disabled = false;
-  btn.textContent = 'Ingresar al panel';
-
-  if (error) {
-    $('#loginError').textContent = error.message.includes('Invalid') ? 'Correo o contraseña incorrectos' : error.message;
-    $('#loginError').style.display = 'block';
-    return;
-  }
-
+  if (error) { setError('#loginError', friendlyError(error)); return; }
+  $('#loginPassword').value = '';
   await checkSession();
 }
 
@@ -86,6 +69,6 @@ async function doLogout() {
   await sb.auth.signOut();
   currentUser = null;
   currentProfile = null;
+  window.location.hash = '';
   window.location.reload();
 }
-

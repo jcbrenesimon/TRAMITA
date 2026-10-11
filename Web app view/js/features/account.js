@@ -6,7 +6,7 @@ async function loadAccount() {
   await checkSession();
   if (!currentProfile) return;
   const firstName = (currentProfile.name || '').trim().split(' ')[0] || 'Usuario';
-  $('#accountGreeting').innerHTML = `Hola, <em style="font-style:italic;color:var(--bronze)">${firstName}</em>.`;
+  $('#accountGreeting').innerHTML = `Hola, <em>${esc(firstName)}</em>.`;
   $('#accName').value = currentProfile.name || '';
   $('#accIdCard').value = currentProfile.id_card || '';
   $('#accPhone').value = currentProfile.phone || '';
@@ -21,6 +21,7 @@ async function loadAccount() {
 async function saveAccount(e) {
   e.preventDefault();
   if (!currentProfile) return;
+  // Solo datos personales: rol, puntos y código los protege la base de datos
   const { error } = await sb.from('users_profile').update({
     name: $('#accName').value.trim(),
     id_card: $('#accIdCard').value.trim(),
@@ -29,8 +30,7 @@ async function saveAccount(e) {
     address: $('#accAddress').value.trim(),
     billing_email: $('#accBillingEmail').value.trim(),
   }).eq('id', currentProfile.id);
-  if (error) { toast('Error al guardar: ' + error.message, true); return; }
+  if (error) { toast('Error al guardar: ' + friendlyError(error), true); return; }
   await checkSession();
   toast('Cambios guardados');
 }
-

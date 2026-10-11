@@ -1,91 +1,72 @@
+// ============================================================
+// CREAR ORDEN (H1): todo se calcula y guarda en create_order()
+// ============================================================
 async function completeCheckout(e) {
   e.preventDefault();
-  if (!selectedPaymentAccountId) { toast('Seleccione un método de pago', true); return; }
-  const btn = $('#submitOrderBtn');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Registrando orden...';
+  setError('#checkoutError', '');
+  const required = ['#coName', '#coIdCard', '#coPhone', '#coAddress'];
+  const missing = required.find(id => !$(id).value.trim());
+  if (missing) { setError('#checkoutError', 'Complete su información de contacto.'); $(missing).focus(); return; }
+  if (!selectedPaymentAccountId) { setError('#checkoutError', 'Seleccione un método de pago.'); return; }
 
-  // Actualizar perfil con datos del checkout
-  await sb.from('users_profile').update({
+  const btn = $('#submitOrderBtn');
+  setBusy(btn, true, 'Registrando orden...');
+
+  // Actualizar datos de contacto del perfil
+  const { error: profileError } = await sb.from('users_profile').update({
     name: $('#coName').value.trim(),
     id_card: $('#coIdCard').value.trim(),
     phone: $('#coPhone').value.trim(),
     address: $('#coAddress').value.trim(),
   }).eq('id', currentProfile.id);
-
-  const t = calculateTotals();
-
-  // Generar referencia
-  const { data: refData, error: refError } = await sb.rpc('generate_order_reference');
-  if (refError) {
-    btn.disabled = false; btn.textContent = 'Confirmar orden';
-    toast('Error generando referencia: ' + refError.message, true);
-    return;
-  }
-  const reference = refData;
-
-  // Crear orden
-  const orderPayload = {
-    reference,
-    user_id: currentProfile.id,
-    order_status: 'pendiente_de_pago',
-    payment_status: 'pending',
-    payment_method: paymentAccounts.find(p => p.id === selectedPaymentAccountId).payment_method,
-    payment_account_id: selectedPaymentAccountId,
-    subtotal: t.subtotal,
-    discount_amount: t.couponDisc,
-    points_used: t.pointsUsed,
-    points_discount: t.pointsDiscount,
-    points_earned: t.pointsEarned,
-    total: t.total,
-    coupon_id: appliedCoupon?.id || null,
-    coupon_code: appliedCoupon?.code || null,
-    shipping_address: $('#coAddress').value.trim(),
-  };
-
-  const { data: order, error: orderError } = await sb.from('orders').insert(orderPayload).select().single();
-  if (orderError) {
-    btn.disabled = false; btn.textContent = 'Confirmar orden';
-    toast('Error creando orden: ' + orderError.message, true);
+  if (profileError) {
+    setBusy(btn, false, 'Confirmar orden');
+    setError('#checkoutError', 'No se pudieron guardar sus datos: ' + friendlyError(profileError));
     return;
   }
 
-  // Crear items
-  const items = cart.map(item => ({
-    order_id: order.id,
-    service_id: item.id,
-    service_name: item.name,
-    service_price: item.price,
-    quantity: 1,
-    subtotal: item.price,
-    points_earned: Math.floor(item.price * (item.points_percentage || 0) / 100),
-  }));
-  await sb.from('order_items').insert(items);
+  const { data, error } = await sb.rpc('create_order', {
+    p_items: cart.map(i => ({ service_id: i.id, quantity: i.qty })),
+    p_payment_account_id: selectedPaymentAccountId,
+    p_coupon_code: appliedCoupon?.code || null,
+    p_use_points: !!$('#usePoints')?.checked,
+    p_shipping_address: $('#coAddress').value.trim(),
+    p_customer_notes: '',
+  });
+  setBusy(btn, false, 'Confirmar orden');
 
-  // Todo OK
+  if (error || !data?.ok) {
+    setError('#checkoutError', data?.error || friendlyError(error));
+    // El catálogo pudo cambiar: recargarlo para que el carrito quede al día
+    if (/disponible/.test(data?.error || '')) loadCategoriesAndServices().then(renderCheckoutSummary);
+    return;
+  }
+
   cart = [];
   saveCart();
   updateCartBadge();
   appliedCoupon = null;
-  currentOrder = order;
-
-  btn.disabled = false;
-  btn.textContent = 'Confirmar orden';
-  showConfirmation(order);
+  removeCoupon();
+  $('#usePoints').checked = false;
+  currentOrder = data.order;
+  await checkSession();   // saldo de puntos actualizado
+  showConfirmation(currentOrder);
 }
 
 function showConfirmation(order) {
   const pa = paymentAccounts.find(p => p.id === order.payment_account_id);
   $('#confirmRef').textContent = order.reference;
   let details = `
-    <div style="background:var(--navy);color:var(--cream);padding:14px 18px;border-radius:var(--radius);margin-bottom:14px;display:flex;justify-content:space-between;align-items:center">
-      <span style="font-size:13px;opacity:.8">Monto a pagar</span>
-      <strong class="serif" style="font-size:26px;letter-spacing:-0.02em">${fmt(order.total)}</strong>
+    <div class="amount-due">
+      <span>Monto a pagar</span>
+      <strong class="serif">${fmt(order.total)}</strong>
     </div>`;
   if (pa) {
-    details += `<div style="padding:14px;background:var(--cream-warm);border-radius:var(--radius)"><strong style="color:var(--navy);font-size:15px">${pa.display_name}</strong><div style="margin-top:8px">${buildPaymentDetails(pa)}</div></div>`;
+    details += `<div class="pay-box"><strong class="pay-box-title">${esc(pa.display_name)}</strong><div class="mt-8">${buildPaymentDetails(pa)}</div></div>`;
   }
   $('#confirmPaymentDetails').innerHTML = details;
+  const promise = settings.receipt_verification_time;
+  $('#verifyPromise').textContent = promise ? ` Lo verificaremos en ${promise}.` : '';
+  resetUploadArea();
   go('confirmation');
 }
-

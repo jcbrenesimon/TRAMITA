@@ -1,40 +1,69 @@
 // ============ NAVEGACIÓN ============
+// La vista actual vive en la URL (#orders, #users…): recargar no pierde la vista.
+const VIEWS = {
+  dashboard: () => renderDashboard(),
+  receipts: () => renderReceipts(),
+  orders: () => renderOrders(),
+  users: () => renderUsers(),
+  services: () => renderServices(),
+  categories: () => renderCategories(),
+  'payment-accounts': () => renderPaymentAccounts(),
+  coupons: () => renderCoupons(),
+  settings: () => renderSettings(),
+  errors: () => renderErrors(),
+};
+
 function go(view) {
-  currentView = view;
-  $$('.sidebar-nav a').forEach(a => a.classList.toggle('active', a.dataset.view === view));
-
-  // Cerrar sidebar en mobile
-  if (window.innerWidth < 900) {
-    $('#sidebar').classList.remove('open');
-  }
-
-  switch (view) {
-    case 'dashboard': renderDashboard(); break;
-    case 'receipts': renderReceipts(); break;
-    case 'orders': renderOrders(); break;
-    case 'users': renderUsers(); break;
-    case 'services': renderServices(); break;
-    case 'categories': renderCategories(); break;
-    case 'payment-accounts': renderPaymentAccounts(); break;
-    case 'coupons': renderCoupons(); break;
-    case 'settings': renderSettings(); break;
-    default: renderDashboard();
-  }
+  const target = '#' + view;
+  if (location.hash === target) routeFromHash();
+  else location.hash = target;
 }
 
-function toggleSidebar() {
-  $('#sidebar').classList.toggle('open');
+function routeFromHash() {
+  if (!$('#app').classList.contains('active')) return;
+  const view = location.hash.replace('#', '') || 'dashboard';
+  currentView = VIEWS[view] ? view : 'dashboard';
+  $$('.sidebar-nav a').forEach(a => {
+    const active = a.dataset.view === currentView;
+    a.classList.toggle('active', active);
+    if (active) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+  });
+  closeSidebar();
+  closeModal();
+  window.scrollTo(0, 0);
+  VIEWS[currentView]();
 }
 
-function setPageTitle(t) { $('#pageTitle').textContent = t; }
+window.addEventListener('hashchange', routeFromHash);
+
+function openSidebar() {
+  $('#app').classList.add('sidebar-open');
+  $('#menuToggle').setAttribute('aria-expanded', 'true');
+  document.body.classList.add('no-scroll');
+  $('#sidebar a.active, #sidebar a')?.focus({ preventScroll: true });
+}
+
+function closeSidebar() {
+  if (!$('#app').classList.contains('sidebar-open')) return;
+  $('#app').classList.remove('sidebar-open');
+  $('#menuToggle').setAttribute('aria-expanded', 'false');
+  document.body.classList.remove('no-scroll');
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && $('#app').classList.contains('sidebar-open')) closeSidebar();
+});
+
+function setPageTitle(t) {
+  $('#pageTitle').textContent = t;
+  document.title = `${t} — Tramitá Admin`;
+}
 
 function handleGlobalSearch(e) {
-  if (e.key === 'Enter') {
-    const q = $('#globalSearch').value.trim();
-    if (q) {
-      ordersSearch = q;
-      go('orders');
-    }
-  }
+  e.preventDefault();
+  const q = $('#globalSearch').value.trim();
+  ordersSearch = q;
+  ordersFilter = 'all';
+  ordersPage = 0;
+  if (currentView === 'orders') renderOrders(); else go('orders');
 }
-

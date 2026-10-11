@@ -21,9 +21,13 @@ RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
   # 'unsafe-inline' en script-src es necesario mientras el HTML use onclick="...".
   Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://kltpwbsdcdegrwegxhem.supabase.co; connect-src 'self' https://kltpwbsdcdegrwegxhem.supabase.co wss://kltpwbsdcdegrwegxhem.supabase.co; object-src https://kltpwbsdcdegrwegxhem.supabase.co; frame-src https://kltpwbsdcdegrwegxhem.supabase.co; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
 
-  # El navegador siempre revisa si hay una versión nueva de HTML, CSS y JS
-  <FilesMatch "\.(html|css|js)$">
+  # El HTML siempre se revisa; app.<hash>.css/js cambian de nombre en cada
+  # versión, así que se pueden guardar en caché un año sin riesgo.
+  <FilesMatch "\.html$">
     Header set Cache-Control "no-cache"
+  </FilesMatch>
+  <FilesMatch "^app\.[0-9a-f]{10}\.(css|js)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
   </FilesMatch>
 </IfModule>
 

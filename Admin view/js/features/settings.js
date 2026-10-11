@@ -1,91 +1,85 @@
 // ============ CONFIGURACIÓN ============
+// Todos los datos del negocio que muestra la app pública se editan aquí.
+const HERO_STATS_SLOTS = 3;
+
 async function renderSettings() {
   setPageTitle('Configuración');
   $('#content').innerHTML = `
-    <div style="margin-bottom:20px">
-      <p style="color:var(--ink-muted)">Ajustes generales del negocio.</p>
-    </div>
-    <div id="settingsForm"><div class="page-loading"><span class="spinner" style="border-color:var(--navy);border-top-color:transparent"></span></div></div>
+    <div class="view-intro"><p>Datos del negocio que se muestran en la app pública.</p></div>
+    <div id="settingsForm">${LOADING}</div>
   `;
   await loadSettings();
 }
 
-// Cantidad de estadísticas que se muestran en el inicio de la app pública
-const HERO_STATS_SLOTS = 3;
-
 async function loadSettings() {
-  const { data, error } = await sb.from('settings').select('*');
-  if (error) { $('#settingsForm').innerHTML = `<div class="empty"><p>Error: ${error.message}</p></div>`; return; }
+  const { data, error } = await sb.from('settings').select('key, value');
+  if (currentView !== 'settings') return;
+  if (error) { $('#settingsForm').innerHTML = emptyState('Error', friendlyError(error)); return; }
 
   const s = {};
-  (data || []).forEach(row => {
-    try { s[row.key] = typeof row.value === 'string' ? JSON.parse(row.value) : row.value; }
-    catch { s[row.key] = row.value; }
-  });
-
-  const isAdmin = currentProfile.role === 'admin';
-  const readonly = isAdmin ? '' : 'disabled';
+  (data || []).forEach(row => { s[row.key] = row.value; });
+  const dis = isAdmin() ? '' : 'disabled';
 
   const statRows = Array.from({ length: HERO_STATS_SLOTS }, (_, i) => `
-    <div class="field-row">
-      <div class="field"><label>Valor ${i + 1}</label><input type="text" id="setStatValue${i}" placeholder="Ej. +2.400" ${readonly}></div>
-      <div class="field"><label>Sufijo</label><input type="text" id="setStatSuffix${i}" placeholder="Ej. /5 (opcional)" ${readonly}></div>
-      <div class="field"><label>Texto</label><input type="text" id="setStatLabel${i}" placeholder="Ej. Trámites gestionados" ${readonly}></div>
+    <div class="field-row field-row-3">
+      <div class="field"><label for="setStatValue${i}">Valor ${i + 1}</label><input type="text" id="setStatValue${i}" maxlength="20" placeholder="Ej. +2.400" ${dis}></div>
+      <div class="field"><label for="setStatSuffix${i}">Sufijo</label><input type="text" id="setStatSuffix${i}" maxlength="10" placeholder="Ej. /5 (opcional)" ${dis}></div>
+      <div class="field"><label for="setStatLabel${i}">Texto</label><input type="text" id="setStatLabel${i}" maxlength="40" placeholder="Ej. Trámites gestionados" ${dis}></div>
     </div>`).join('');
 
+  const card = (title, inner, hint = '') => `
+    <section class="data-card">
+      <div class="data-head"><h3>${title}</h3></div>
+      <div class="card-pad">${hint ? `<div class="field-hint mb-12">${hint}</div>` : ''}${inner}</div>
+    </section>`;
+
   $('#settingsForm').innerHTML = `
-    <div style="display:grid;grid-template-columns:1fr;gap:18px;max-width:720px">
-      <div class="data-card">
-        <div class="data-head"><h3>Datos del negocio</h3></div>
-        <div style="padding:18px">
-          <div class="field"><label>Nombre comercial</label><input type="text" id="setBizName" ${readonly}></div>
-          <div class="field-row">
-            <div class="field"><label>Correo de contacto</label><input type="email" id="setBizEmail" ${readonly}></div>
-            <div class="field"><label>Teléfono (WhatsApp)</label><input type="text" id="setBizPhone" placeholder="506XXXXXXXX" ${readonly}></div>
-          </div>
-          <div class="field"><label>Dirección</label><input type="text" id="setBizAddress" ${readonly}></div>
-          <div class="field"><label>Horario de atención</label><input type="text" id="setBizHours" placeholder="Ej. Lun – Vie, 8:00 a.m. – 5:00 p.m." ${readonly}></div>
-          <div class="field"><label>Cédula jurídica</label><input type="text" id="setBizTaxId" ${readonly}></div>
+    <div class="settings-grid">
+      ${card('Datos del negocio', `
+        <div class="field"><label for="setBizName">Nombre comercial</label><input type="text" id="setBizName" maxlength="100" ${dis}></div>
+        <div class="field-row">
+          <div class="field"><label for="setBizEmail">Correo de contacto</label><input type="email" id="setBizEmail" maxlength="150" ${dis}></div>
+          <div class="field"><label for="setBizPhone">Teléfono (WhatsApp)</label><input type="text" id="setBizPhone" maxlength="20" placeholder="506XXXXXXXX" ${dis}></div>
         </div>
-      </div>
+        <div class="field"><label for="setBizAddress">Dirección</label><input type="text" id="setBizAddress" maxlength="200" ${dis}></div>
+        <div class="field"><label for="setBizHours">Horario de atención</label><input type="text" id="setBizHours" maxlength="100" placeholder="Ej. Lun – Vie, 8:00 a.m. – 5:00 p.m." ${dis}></div>
+        <div class="field"><label for="setBizTaxId">Cédula jurídica</label><input type="text" id="setBizTaxId" maxlength="30" ${dis}></div>
+      `)}
 
-      <div class="data-card">
-        <div class="data-head"><h3>Estadísticas del inicio</h3></div>
-        <div style="padding:18px">
-          <div class="field-hint" style="margin-bottom:12px">Se muestran debajo del título principal de la app pública. Deje vacía una fila para ocultarla.</div>
-          ${statRows}
+      ${card('Detalle de servicios', `
+        <div class="field-row">
+          <div class="field"><label for="setModality">Modalidad</label><input type="text" id="setModality" maxlength="60" placeholder="Ej. 100% en línea" ${dis}></div>
+          <div class="field"><label for="setCoverage">Cobertura</label><input type="text" id="setCoverage" maxlength="60" placeholder="Ej. Nacional" ${dis}></div>
         </div>
-      </div>
+        <div class="field"><label for="setVerifyTime">Tiempo de verificación del comprobante</label><input type="text" id="setVerifyTime" maxlength="60" placeholder="Ej. menos de 2 horas hábiles" ${dis}><div class="field-hint">Se muestra como "Lo verificaremos en …". Vacío = no se muestra.</div></div>
+      `, 'Se muestran en todas las fichas de servicio. Vacío = se oculta la fila.')}
 
-      <div class="data-card">
-        <div class="data-head"><h3>Programa de puntos</h3></div>
-        <div style="padding:18px">
-          <div class="field-row">
-            <div class="field"><label>Valor del punto (₡)</label><input type="number" id="setPointValue" min="0" step="0.1" ${readonly}><div class="field-hint">Vacío o 0 desactiva el canje de puntos</div></div>
-            <div class="field">
-              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding-bottom:10px">
-                <input type="checkbox" id="setAllowCombine" ${readonly} style="width:auto">
-                <span>Combinar cupón + puntos</span>
-              </label>
-            </div>
-          </div>
-          <div class="field-row">
-            <div class="field"><label>Puntos por referir</label><input type="number" id="setReferralBonus" min="0" ${readonly}><div class="field-hint">Al referidor cuando el referido hace su 1ra compra</div></div>
-            <div class="field"><label>Puntos de bienvenida</label><input type="number" id="setWelcomeBonus" min="0" ${readonly}><div class="field-hint">Al referido en su 1ra compra</div></div>
-          </div>
-        </div>
-      </div>
+      ${card('Estadísticas del inicio', statRows,
+        'Se muestran debajo del título principal. Use solo cifras reales y verificables (Ley 7472). Deje vacía una fila para ocultarla.')}
 
-      ${isAdmin ? `
-        <div style="display:flex;justify-content:flex-end;gap:10px">
-          <button class="btn btn-primary btn-lg" onclick="saveAllSettings()">Guardar configuración</button>
+      ${card('Programa de puntos', `
+        <div class="field-row">
+          <div class="field"><label for="setPointValue">Valor del punto (₡)</label><input type="number" id="setPointValue" min="0" step="0.1" ${dis}><div class="field-hint">Vacío o 0 desactiva el canje. Ej.: con 1% de puntos y ₡1 por punto, el cliente recibe 1% de vuelta.</div></div>
+          <label class="check-label check-label-bottom"><input type="checkbox" id="setAllowCombine" ${dis}><span>Permitir cupón + puntos en la misma compra</span></label>
         </div>
-      ` : '<p style="color:var(--ink-subtle);font-size:13px;text-align:center">Solo el administrador puede modificar esta configuración.</p>'}
+        <div class="field-row">
+          <div class="field"><label for="setReferralBonus">Puntos por referir</label><input type="number" id="setReferralBonus" min="0" ${dis}><div class="field-hint">Al referidor cuando el referido hace su 1ra compra</div></div>
+          <div class="field"><label for="setWelcomeBonus">Puntos de bienvenida</label><input type="number" id="setWelcomeBonus" min="0" ${dis}><div class="field-hint">Al referido en su 1ra compra</div></div>
+        </div>
+      `)}
+
+      ${card('Textos legales', `
+        <div class="field"><label for="setPrivacy">Política de privacidad</label><textarea id="setPrivacy" rows="10" maxlength="20000" ${dis}></textarea></div>
+        <div class="field"><label for="setTerms">Términos y condiciones</label><textarea id="setTerms" rows="10" maxlength="20000" ${dis}></textarea></div>
+      `, 'Se publican en #/privacidad y #/terminos. Un párrafo que empieza con "1. Título" se muestra como subtítulo. ⚠️ El texto inicial es un borrador: revíselo con un abogado.')}
+
+      ${isAdmin()
+        ? '<div class="form-actions"><button class="btn btn-primary btn-lg" type="button" id="saveSettingsBtn" onclick="saveAllSettings()">Guardar configuración</button></div>'
+        : '<p class="text-muted small center">Solo el administrador puede modificar esta configuración.</p>'}
     </div>
   `;
 
-  // Los valores se asignan por propiedad (no dentro del HTML) para que
-  // comillas u otros caracteres en los datos no rompan el formulario.
+  // Valores asignados por propiedad: comillas u otros caracteres no rompen el formulario
   const fill = (sel, v) => { $(sel).value = v ?? ''; };
   fill('#setBizName', s.business_name);
   fill('#setBizEmail', s.business_email);
@@ -93,9 +87,14 @@ async function loadSettings() {
   fill('#setBizAddress', s.business_address);
   fill('#setBizHours', s.business_hours);
   fill('#setBizTaxId', s.business_tax_id);
+  fill('#setModality', s.service_modality);
+  fill('#setCoverage', s.service_coverage);
+  fill('#setVerifyTime', s.receipt_verification_time);
   fill('#setPointValue', s.point_value_crc);
   fill('#setReferralBonus', s.referral_bonus_points);
   fill('#setWelcomeBonus', s.referred_welcome_points);
+  fill('#setPrivacy', s.privacy_policy);
+  fill('#setTerms', s.terms_of_service);
   $('#setAllowCombine').checked = s.allow_combine_coupon_and_points === true;
   const stats = Array.isArray(s.hero_stats) ? s.hero_stats : [];
   for (let i = 0; i < HERO_STATS_SLOTS; i++) {
@@ -121,29 +120,28 @@ async function saveAllSettings() {
   const updates = [
     ['business_name', text('#setBizName')],
     ['business_email', text('#setBizEmail')],
-    ['business_phone', text('#setBizPhone')],
+    ['business_phone', text('#setBizPhone').replace(/\D/g, '')],
     ['business_address', text('#setBizAddress')],
     ['business_hours', text('#setBizHours')],
     ['business_tax_id', text('#setBizTaxId')],
+    ['service_modality', text('#setModality')],
+    ['service_coverage', text('#setCoverage')],
+    ['receipt_verification_time', text('#setVerifyTime')],
     ['hero_stats', heroStats],
     ['point_value_crc', num('#setPointValue', parseFloat)],
     ['referral_bonus_points', num('#setReferralBonus', v => parseInt(v))],
     ['referred_welcome_points', num('#setWelcomeBonus', v => parseInt(v))],
-    ['allow_combine_coupon_and_points', $('#setAllowCombine')?.checked || false]
+    ['allow_combine_coupon_and_points', $('#setAllowCombine')?.checked || false],
+    ['privacy_policy', $('#setPrivacy')?.value?.trim() || ''],
+    ['terms_of_service', $('#setTerms')?.value?.trim() || ''],
   ].filter(([, value]) => value !== undefined && !Number.isNaN(value));
 
-  let errors = 0;
-  for (const [key, value] of updates) {
-    const { data, error } = await sb.rpc('admin_save_setting', {
-      p_key: key,
-      p_value: value
-    });
-    if (error || !data?.ok) errors++;
-  }
+  const btn = $('#saveSettingsBtn');
+  setBusy(btn, true, 'Guardando...');
+  const results = await Promise.all(updates.map(([key, value]) => sb.rpc('admin_save_setting', { p_key: key, p_value: value })));
+  setBusy(btn, false, 'Guardar configuración');
+  const errors = results.map(r => rpcError(r.error, r.data)).filter(Boolean);
 
-  if (errors > 0) {
-    toast(`Guardado con ${errors} error(es)`, 'error');
-  } else {
-    toast('✓ Configuración guardada', 'success');
-  }
+  if (errors.length) toast(`Guardado con ${errors.length} error(es): ${errors[0]}`, 'error');
+  else toast('✓ Configuración guardada', 'success');
 }

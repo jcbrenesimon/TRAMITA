@@ -1,12 +1,13 @@
-/* ============ LOADING / TOAST ============ */
+/* ============ LOADING / TOAST / AVISOS ============ */
 .spinner {
-  display: inline-block;
+  display: inline-block; flex-shrink: 0;
   width: 16px; height: 16px;
   border: 2px solid var(--cream);
   border-top-color: transparent;
   border-radius: 50%;
   animation: spin .7s linear infinite;
 }
+.spinner-dark { border-color: var(--navy); border-top-color: transparent; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .page-loading {
   display: flex; align-items: center; justify-content: center;
@@ -14,16 +15,18 @@
 }
 .toast {
   position: fixed; top: 20px; left: 50%;
-  transform: translateX(-50%) translateY(-120%);
+  transform: translateX(-50%) translateY(-150%);
   background: var(--navy); color: var(--cream);
   padding: 11px 18px; border-radius: var(--radius);
   font-size: 13.5px; z-index: 300;
   transition: transform .3s cubic-bezier(.2,.8,.2,1);
   box-shadow: var(--shadow-lg);
   display: flex; align-items: center; gap: 10px;
-  max-width: calc(100vw - 40px);
+  width: max-content; max-width: calc(100vw - 32px);
 }
 .toast.show { transform: translateX(-50%) translateY(0); }
 .toast.error { background: var(--danger); }
 .toast.success { background: var(--success); }
 
+.banner { padding: 10px 12px; border-radius: var(--radius); font-size: 12.5px; margin-top: 8px; }
+.banner-info { background: var(--info-bg); color: var(--info); }

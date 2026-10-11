@@ -28,4 +28,10 @@ const ROLE_LABELS = {
   admin: { text: 'Admin', cls: 'role-admin' },
   consulta: { text: 'Consulta', cls: 'role-consulta' },
 };
+const NOTE_KINDS = { internal: 'Interna', whatsapp: 'WhatsApp', call: 'Llamada', email: 'Email', system: 'Sistema' };
+const PAYMENT_METHODS = { sinpe: 'SINPE Móvil', transferencia: 'Transferencia', deposito: 'Depósito', link_bancario: 'Link bancario' };
 
+const badge = (map, key) => {
+  const l = map[key] || { text: key || '—', cls: 'badge-muted' };
+  return `<span class="badge ${l.cls}">${esc(l.text)}</span>`;
+};

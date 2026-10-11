@@ -2,66 +2,72 @@
 // CHECKOUT
 // ============================================================
 async function loadCheckout() {
-  if (!cart.length) { go('services'); return; }
+  if (!cartLines().length) { go('services'); return; }
+  setError('#checkoutError', '');
   if (!currentUser) {
-    $('#checkoutLoginCta').style.display = 'block';
-    $('#checkoutForm').style.display = 'none';
+    show('#checkoutLoginCta', true);
+    show('#checkoutForm', false);
     return;
   }
-  $('#checkoutLoginCta').style.display = 'none';
-  $('#checkoutForm').style.display = 'block';
+  show('#checkoutLoginCta', false);
+  show('#checkoutForm', true);
 
-  // Llenar datos del usuario
   $('#coName').value = currentProfile.name || '';
   $('#coIdCard').value = currentProfile.id_card || '';
   $('#coEmail').value = currentProfile.email || '';
   $('#coPhone').value = currentProfile.phone || '';
   $('#coAddress').value = currentProfile.address || '';
 
-  // Puntos disponibles
+  // Puntos disponibles (solo si el negocio definió el valor del punto)
   const points = currentProfile.points_balance || 0;
   const pointValue = Number(settings.point_value_crc) || 0;
-  if (points > 0 && pointValue > 0) {
-    $('#pointsBox').style.display = 'block';
-    $('#userPointsDisplay').textContent = points;
-    $('#userPointsCRC').textContent = fmt(points * pointValue);
-  } else {
-    $('#pointsBox').style.display = 'none';
-  }
+  show('#pointsBox', points > 0 && pointValue > 0);
+  $('#userPointsDisplay').textContent = points;
+  $('#userPointsCRC').textContent = fmt(Math.floor(points * pointValue));
 
-  // Métodos de pago
+  // Un cupón aplicado antes puede no valer para el carrito actual
+  if (appliedCoupon) await applyCoupon(appliedCoupon.code, { silent: true });
+
   renderPaymentMethods();
   renderCheckoutSummary();
 }
 
 function renderPaymentMethods() {
   if (!paymentAccounts.length) {
-    $('#paymentMethods').innerHTML = '<p style="color:var(--ink-subtle);text-align:center">No hay métodos de pago configurados.</p>';
+    $('#paymentMethods').innerHTML = '<p class="muted center">No hay métodos de pago configurados. Contáctenos para completar su compra.</p>';
     return;
   }
+  if (!paymentAccounts.some(p => p.id === selectedPaymentAccountId)) selectedPaymentAccountId = null;
   $('#paymentMethods').innerHTML = paymentAccounts.map(pa => {
-    const details = buildPaymentDetails(pa);
+    const selected = selectedPaymentAccountId === pa.id;
     return `
-      <label class="payment-method ${selectedPaymentAccountId === pa.id ? 'selected' : ''}" onclick="selectPayment(${pa.id})">
-        <div class="payment-method-head">
-          <input type="radio" name="pm" ${selectedPaymentAccountId === pa.id ? 'checked' : ''}>
-          <span class="payment-method-title">${pa.display_name}</span>
-          <span class="payment-method-currency">${pa.currency}</span>
-        </div>
-        <div class="payment-method-details">${details}</div>
-      </label>`;
+      <div class="payment-method ${selected ? 'selected' : ''}">
+        <label class="payment-method-head">
+          <input type="radio" name="pm" value="${pa.id}" ${selected ? 'checked' : ''} onchange="selectPayment(${pa.id})">
+          <span class="payment-method-title">${esc(pa.display_name)}</span>
+          <span class="payment-method-currency">${esc(pa.currency)}</span>
+        </label>
+        <div class="payment-method-details">${buildPaymentDetails(pa)}</div>
+      </div>`;
   }).join('');
+}
+
+function copyField(label, value) {
+  return `<div class="copy-label"><strong>${label}:</strong></div>
+    <div class="copy-field"><span>${esc(value)}</span><button type="button" class="copy-btn" data-copy="${esc(value)}">Copiar</button></div>`;
 }
 
 function buildPaymentDetails(pa) {
   let html = '';
-  if (pa.bank) html += `<div><strong>Banco:</strong> ${pa.bank}</div>`;
-  if (pa.sinpe_number) html += `<div style="margin-top:6px"><strong>SINPE:</strong></div><div class="copy-field"><span>${pa.sinpe_number}</span><button type="button" class="copy-btn" onclick="event.stopPropagation();copyText('${pa.sinpe_number}',this)">Copiar</button></div>`;
-  if (pa.iban) html += `<div style="margin-top:6px"><strong>IBAN:</strong></div><div class="copy-field"><span>${pa.iban}</span><button type="button" class="copy-btn" onclick="event.stopPropagation();copyText('${pa.iban}',this)">Copiar</button></div>`;
-  if (pa.account_holder) html += `<div style="margin-top:6px"><strong>Titular:</strong> ${pa.account_holder}</div>`;
-  if (pa.holder_id) html += `<div><strong>Cédula:</strong> ${pa.holder_id}</div>`;
-  if (pa.payment_link_url) html += `<div style="margin-top:10px"><a href="${pa.payment_link_url}" target="_blank" class="btn btn-outline btn-sm">Abrir link de pago →</a></div>`;
-  if (pa.instructions) html += `<div style="margin-top:10px;font-style:italic">${pa.instructions}</div>`;
+  if (pa.bank) html += `<div><strong>Banco:</strong> ${esc(pa.bank)}</div>`;
+  if (pa.sinpe_number) html += copyField('SINPE', pa.sinpe_number);
+  if (pa.iban) html += copyField('IBAN', pa.iban);
+  if (pa.account_number) html += copyField('Cuenta', pa.account_number);
+  if (pa.account_holder) html += `<div class="mt-6"><strong>Titular:</strong> ${esc(pa.account_holder)}</div>`;
+  if (pa.holder_id) html += `<div><strong>Cédula:</strong> ${esc(pa.holder_id)}</div>`;
+  const link = safeUrl(pa.payment_link_url);
+  if (link) html += `<div class="mt-10"><a href="${esc(link)}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm">Abrir link de pago →</a></div>`;
+  if (pa.instructions) html += `<div class="pm-instructions">${esc(pa.instructions)}</div>`;
   return html;
 }
 
@@ -69,15 +75,5 @@ function selectPayment(id) {
   selectedPaymentAccountId = id;
   renderPaymentMethods();
   renderCheckoutSummary();
+  setError('#checkoutError', '');
 }
-
-function copyText(text, btn) {
-  navigator.clipboard.writeText(text);
-  btn.textContent = '✓ Copiado';
-  btn.classList.add('copied');
-  setTimeout(() => {
-    btn.textContent = 'Copiar';
-    btn.classList.remove('copied');
-  }, 2000);
-}
-

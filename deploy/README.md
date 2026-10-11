@@ -6,23 +6,18 @@
 python deploy/build.py
 ```
 
-Crea `dist/tramita-web.zip` y `dist/tramita-admin.zip` (la carpeta `dist/` no se sube a git).
+Crea `dist/public_html/` — es lo único que se sube a Hostinger. La carpeta `dist/` no se sube a git.
+Cada app queda en 4–5 archivos: `index.html`, `app.<hash>.css`, `app.<hash>.js`, `favicon.svg` y `.htaccess`.
 
-## 2. Subir (hPanel → Archivos → Administrador de archivos)
+## 2. Subir (hPanel → Archivos → Administrador de archivos → `public_html/`)
 
-| Zip | Dónde se extrae |
-|---|---|
-| `tramita-web.zip` | `public_html/` |
-| `tramita-admin.zip` | `public_html/admin/` (crear la carpeta) |
-
-Subir el zip a la carpeta → clic derecho → **Extraer** → borrar el zip.
-En `public_html/` borrar el `default.php` / `index.php` de bienvenida de Hostinger si existe.
-Activar "Mostrar archivos ocultos" y confirmar que cada carpeta tiene su `.htaccess`.
+1. Borre los `app.*.css` / `app.*.js` viejos de `public_html/` y de `public_html/admin/` (cambian de nombre en cada versión).
+2. Arrastre **el contenido** de `dist/public_html/` a `public_html/` y reemplace.
+3. ⚠️ Si reemplaza `public_html/admin/.htaccess`, la contraseña de Hostinger del panel se pierde: vuelva a activarla en Avanzado → Proteger directorios. (Alternativa: no reemplace ese `.htaccess` si no cambió.)
 
 ## 3. Proteger el panel
 
 hPanel → Avanzado → **Proteger directorios con contraseña** → carpeta `public_html/admin`.
-Quien no tenga esa contraseña no descarga ni el código del panel.
 
 ## 4. Supabase
 
@@ -32,12 +27,8 @@ Authentication → **URL Configuration**:
 
 ## Cuando exista el dominio propio (tramita.cr)
 
-1. hPanel → Dominios → Subdominios → crear `admin` (carpeta `public_html/admin` o la que asigne Hostinger).
+1. hPanel → Dominios → Subdominios → crear `admin`.
 2. `python deploy/build.py --public-url https://tramita.cr`
-3. Subir `tramita-admin.zip` a la carpeta del subdominio y proteger esa carpeta.
+3. Subir el contenido de `dist/public_html/admin/` a la carpeta del subdominio y protegerla.
 4. Agregar `https://admin.tramita.cr/**` en las Redirect URLs de Supabase.
-
-## Actualizar
-
-Repetir 1 y 2 (reemplazando archivos). Las reglas de caché del `.htaccess` hacen que los
-navegadores tomen la versión nueva sin necesidad de Ctrl+Shift+R.
+5. Actualizar la CSP de los `.htaccess` si cambia el proyecto de Supabase.

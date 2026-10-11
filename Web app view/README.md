@@ -1,46 +1,57 @@
 # Tramitá — Web app (cliente)
 
-Entrada: `tramita-app-v2.html` (solo el HTML de las pantallas). Estilos y lógica están separados por responsabilidad.
+Entrada: `tramita-app-v2.html` (el HTML de todas las pantallas). Estilos y lógica están separados por responsabilidad. En producción `deploy/build.py` los une en `app.<hash>.css` y `app.<hash>.js`.
+
+## Rutas (URL real de cada pantalla)
+
+`#/` inicio · `#/servicios` · `#/servicios/<slug>` · `#/carrito` · `#/pago` · `#/confirmacion` · `#/ingresar` · `#/registro` · `#/recuperar` · `#/nueva-contrasena` · `#/cuenta` · `#/compras` · `#/contacto` · `#/privacidad` · `#/terminos`
 
 ## Estructura
 
 ```
 Web app view/
-├── tramita-app-v2.html     Estructura HTML de todas las pantallas (.page)
+├── tramita-app-v2.html     Pantallas (.page), SEO y accesibilidad
+├── favicon.svg, robots.txt
 ├── css/                    Se cargan en este orden (importa para la cascada)
-│   ├── base.css            Variables (:root), reset, tipografía
+│   ├── base.css            Variables, reset, accesibilidad, utilidades, reglas de sesión (auth-only/guest-only)
 │   ├── nav.css             Barra superior, menú móvil, menú de usuario
 │   ├── buttons.css         Botones
-│   ├── layout.css          Contenedores
-│   ├── home.css            Hero, secciones, tarjetas de servicio, cómo funciona, beneficios, CTA
-│   ├── service-detail.css  Detalle de servicio
+│   ├── layout.css          Contenedores y páginas
+│   ├── home.css            Inicio, tarjetas de servicio, cómo funciona, beneficios
+│   ├── service-detail.css  Detalle de servicio y migas de pan
 │   ├── forms.css           Formularios
 │   ├── checkout.css        Carrito, checkout, métodos de pago, cupón, comprobante, confirmación
-│   ├── orders.css          Mis compras
+│   ├── orders.css          Mis compras y estados
 │   ├── footer.css          Footer y botón flotante de WhatsApp
-│   ├── feedback.css        Toast y loaders
-│   └── responsive.css      Media queries (siempre de último)
+│   ├── feedback.css        Toast, loaders y avisos
+│   ├── legal.css           Privacidad, términos y contacto
+│   └── responsive.css      Celular (≤420), tablet (≥640), escritorio (≥900) — siempre de último
 └── js/                     Scripts clásicos (no módulos), cargados en este orden
-    ├── core/config.js      URL y key de Supabase, cliente `sb`
-    ├── core/state.js       Estado global (usuario, perfil, carrito, cupón, orden actual…)
-    ├── utils/helpers.js    $, $$, fmt, saveCart, toast, openWA
-    ├── ui/header.js        Badge del carrito, UI según sesión, menú de usuario
-    ├── core/router.js      go(page), menú móvil, efecto scroll del nav
-    ├── core/data-loader.js Carga de settings, categorías, servicios y cuentas de pago
-    ├── features/catalog.js Iconos, tarjetas, filtros, detalle, agregar al carrito
-    ├── features/cart.js    Carrito
-    ├── features/auth.js    Sesión, login, registro, logout
-    ├── features/account.js Mi cuenta
-    ├── features/checkout.js   Checkout: datos, puntos disponibles, métodos de pago
-    ├── features/pricing.js    Cupón, puntos, cálculo de totales y resumen
-    ├── features/order-create.js Crear orden + items, pantalla de confirmación
-    ├── features/receipts.js   Subida de comprobante
-    ├── features/orders.js     Mis compras: estados, banners, reanudar subida
-    └── app.js              init(): arranque y listener de cambios de sesión (siempre de último)
+    ├── core/config.js      Supabase (PKCE) y constantes
+    ├── core/state.js       Estado global; carrito [{id, qty}]
+    ├── utils/helpers.js    $, esc() (escapar HTML), safeUrl, toast, WhatsApp, errores en español
+    ├── utils/errors.js     Envía los errores de JS a log_client_error()
+    ├── utils/icons.js      Íconos de servicio (car, doc, more o emoji)
+    ├── ui/header.js        Badge del carrito, UI según sesión, menús
+    ├── core/router.js      Rutas #/…, título de la página y foco accesible
+    ├── core/data-loader.js settings, categorías, servicios y cuentas de pago
+    ├── features/catalog.js     Tarjetas, filtros y detalle
+    ├── features/cart.js        Carrito con cantidades
+    ├── features/auth.js        Sesión, login, registro, recuperar/cambiar contraseña
+    ├── features/account.js     Mi cuenta
+    ├── features/checkout.js    Datos y métodos de pago
+    ├── features/pricing.js     Cupón (validate_coupon), puntos y vista previa del total
+    ├── features/order-create.js create_order() y confirmación
+    ├── features/receipts.js    Subida del comprobante (clic o arrastrar)
+    ├── features/orders.js      Mis compras
+    ├── features/legal.js       Privacidad y términos desde settings
+    └── app.js              Arranque (siempre de último)
 ```
 
 ## Reglas para mantenerlo
 
-- Los scripts son **clásicos** a propósito: el HTML usa `onclick="go(...)"` y similares, que necesitan funciones globales. No convertir a `type="module"` sin migrar esos handlers.
-- El orden de `<script>` importa: `config` → `state` → resto → `app.js` al final.
-- Abrir con un servidor local (`python -m http.server`) o directamente con doble clic; ambos funcionan.
+- **Todo dato de la base de datos o del usuario que entre a `innerHTML` pasa por `esc()`.** URLs externas por `safeUrl()`.
+- Montos, cupones y puntos los calcula la base de datos (`create_order`, `validate_coupon`). El navegador solo muestra una vista previa.
+- Los datos del negocio (contacto, horario, estadísticas, textos legales) vienen de `settings` y se editan en el panel → Configuración.
+- Los scripts son clásicos a propósito: el HTML usa `onclick="..."`, que necesita funciones globales.
+- Para probar en local: `python -m http.server` dentro de esta carpeta.

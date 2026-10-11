@@ -5,6 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0B1F3F">
 <title>Tramitá — Servicios profesionales de tramitología en Costa Rica</title>
+<meta name="description" content="Contrate en línea sus trámites en Costa Rica: recuperación de placas, apostillas, certificaciones y gestiones vehiculares y legales, con precios publicados y seguimiento de cada orden.">
+<meta name="robots" content="index, follow">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_CR">
+<meta property="og:site_name" content="Tramitá">
+<meta property="og:title" content="Tramitá — Servicios profesionales de tramitología en Costa Rica">
+<meta property="og:description" content="Contrate en línea sus trámites en Costa Rica con precios publicados y seguimiento de cada orden.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Geist:wght@300..900&display=swap" rel="stylesheet">
@@ -25,207 +34,212 @@
 <link rel="stylesheet" href="css/orders.css">
 <link rel="stylesheet" href="css/footer.css">
 <link rel="stylesheet" href="css/feedback.css">
+<link rel="stylesheet" href="css/legal.css">
 <link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
+<a class="skip-link" href="#main">Saltar al contenido</a>
 
 <div class="topbar">
-  <span>Servicios en línea</span><span class="dot">•</span><span>Costa Rica</span>
+  <span>Servicios en línea</span><span class="dot" aria-hidden="true">•</span><span>Costa Rica</span>
 </div>
 
-<nav class="nav" id="nav">
-  <div class="logo" onclick="go('home')">
-    <div class="logo-mark">T</div>
+<nav class="nav" id="nav" aria-label="Principal">
+  <a class="logo" href="#/" aria-label="Tramitá, inicio">
+    <span class="logo-mark" aria-hidden="true">T</span>
     <span>Tramit<em>á</em></span>
-  </div>
+  </a>
   <div class="nav-links">
-    <a onclick="go('home')" data-page="home">Inicio</a>
-    <a onclick="go('services')" data-page="services">Servicios</a>
-    <a onclick="go('contact')" data-page="contact">Contacto</a>
+    <a href="#/" data-page="home">Inicio</a>
+    <a href="#/servicios" data-page="services">Servicios</a>
+    <a href="#/contacto" data-page="contact">Contacto</a>
   </div>
   <div class="nav-actions">
-    <button class="icon-btn" onclick="go('cart')" aria-label="Carrito">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg>
-      <span class="cart-badge" id="cartBadge">0</span>
-    </button>
+    <a class="icon-btn" href="#/carrito" aria-label="Carrito">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg>
+      <span class="cart-badge" id="cartBadge" aria-live="polite">0</span>
+    </a>
 
     <!-- Botón Ingresar (solo visitantes) -->
-    <button class="btn btn-primary btn-sm guest-only" onclick="go('login')" style="padding:9px 18px">Ingresar</button>
+    <a class="btn btn-primary btn-sm btn-nav guest-only" href="#/ingresar">Ingresar</a>
 
-    <!-- Menú usuario (solo logueados) -->
-    <div class="user-menu auth-only" style="display:none;position:relative">
-      <button class="user-btn" onclick="toggleUserMenu(event)" aria-label="Menú usuario">
-        <span class="user-avatar" id="userAvatar">?</span>
+    <!-- Menú usuario (solo con sesión) -->
+    <div class="user-menu auth-only">
+      <button class="user-btn" type="button" onclick="toggleUserMenu(event)" aria-haspopup="true" aria-expanded="false" aria-controls="userDropdown" id="userMenuBtn">
+        <span class="user-avatar" id="userAvatar" aria-hidden="true">?</span>
         <span class="user-name-short" id="userNameShort">Usuario</span>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
       <div class="user-dropdown" id="userDropdown">
         <div class="user-dropdown-head">
           <div class="user-name-full" id="userNameFull">—</div>
           <div class="user-email" id="userEmailShow">—</div>
         </div>
-        <a onclick="go('account');closeUserMenu()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <a href="#/cuenta" onclick="closeUserMenu()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
           Mi cuenta
         </a>
-        <a onclick="go('orders');closeUserMenu()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11H3v10h6V11zM21 3h-6v18h6V3zM15 7H9v14h6V7z"/></svg>
+        <a href="#/compras" onclick="closeUserMenu()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11H3v10h6V11zM21 3h-6v18h6V3zM15 7H9v14h6V7z"/></svg>
           Mis compras
         </a>
         <div class="user-dropdown-divider"></div>
-        <a onclick="doLogout();closeUserMenu()" style="color:var(--danger)">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        <button type="button" class="danger" onclick="closeUserMenu();doLogout()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
           Cerrar sesión
-        </a>
+        </button>
       </div>
     </div>
 
-    <button class="menu-btn icon-btn" onclick="toggleMenu()" aria-label="Menú">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    <button class="menu-btn icon-btn" type="button" onclick="toggleMenu()" aria-label="Abrir menú" aria-controls="mobileMenu" aria-expanded="false" id="menuBtn">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
   </div>
 </nav>
 
-<div class="mobile-menu" id="mobileMenu">
+<div class="mobile-menu" id="mobileMenu" aria-hidden="true">
   <div class="mobile-menu-head">
-    <div class="logo">
-      <div class="logo-mark">T</div>
+    <a class="logo" href="#/" onclick="closeMenu()">
+      <span class="logo-mark" aria-hidden="true">T</span>
       <span>Tramitá</span>
-    </div>
-    <button class="icon-btn" onclick="toggleMenu()" aria-label="Cerrar">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+    </a>
+    <button class="icon-btn" type="button" onclick="closeMenu()" aria-label="Cerrar menú">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
     </button>
   </div>
 
-  <!-- Banner usuario logueado en mobile -->
-  <div class="mobile-user-banner auth-only" style="display:none">
-    <div class="user-avatar-lg" id="mobileUserAvatar">?</div>
-    <div>
+  <!-- Usuario con sesión en mobile -->
+  <div class="mobile-user-banner auth-only">
+    <div class="user-avatar-lg" id="mobileUserAvatar" aria-hidden="true">?</div>
+    <div class="min-w-0">
       <div class="mobile-user-name" id="mobileUserName">—</div>
       <div class="mobile-user-email" id="mobileUserEmail">—</div>
     </div>
   </div>
 
   <div class="mobile-menu-body">
-    <a onclick="go('home')">Inicio</a>
-    <a onclick="go('services')">Servicios</a>
-    <a onclick="go('account')" class="auth-only" style="display:none">Mi cuenta</a>
-    <a onclick="go('orders')" class="auth-only" style="display:none">Mis compras</a>
-    <a onclick="go('contact')">Contacto</a>
+    <a href="#/" onclick="closeMenu()">Inicio</a>
+    <a href="#/servicios" onclick="closeMenu()">Servicios</a>
+    <a href="#/cuenta" onclick="closeMenu()" class="auth-only">Mi cuenta</a>
+    <a href="#/compras" onclick="closeMenu()" class="auth-only">Mis compras</a>
+    <a href="#/contacto" onclick="closeMenu()">Contacto</a>
   </div>
   <div class="mobile-menu-foot">
-    <button class="btn btn-outline btn-block guest-only" onclick="go('login')">Iniciar sesión</button>
-    <button class="btn btn-primary btn-block guest-only" onclick="go('register')">Crear cuenta</button>
-    <button class="btn btn-ghost btn-block auth-only" style="display:none;color:var(--danger)" onclick="doLogout()">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+    <a class="btn btn-outline btn-block guest-only" href="#/ingresar" onclick="closeMenu()">Iniciar sesión</a>
+    <a class="btn btn-primary btn-block guest-only" href="#/registro" onclick="closeMenu()">Crear cuenta</a>
+    <button class="btn btn-ghost btn-block text-danger auth-only" type="button" onclick="closeMenu();doLogout()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
       Cerrar sesión
     </button>
   </div>
 </div>
 
+<main id="main" tabindex="-1">
+
 <!-- ==================== HOME ==================== -->
-<div class="page active" id="page-home">
-  <section class="hero">
+<section class="page active" id="page-home" aria-label="Inicio">
+  <div class="hero">
     <div class="hero-inner">
       <div class="hero-tag">
-        <span class="pulse"></span>
+        <span class="pulse" aria-hidden="true"></span>
         Atendiendo en todo el territorio nacional
       </div>
       <h1>Su tiempo vale. <em>Nosotros gestionamos</em> sus trámites.</h1>
       <p class="lead">Servicios profesionales de tramitología en Costa Rica. Recuperación de placas, apostillas, certificaciones y gestiones legales — con seguimiento claro y precios transparentes.</p>
       <div class="hero-ctas">
-        <button class="btn btn-primary btn-lg" onclick="go('services')">Ver servicios</button>
-        <button class="btn btn-outline btn-lg" onclick="openWA('Hola, deseo cotizar un trámite con ustedes.')">Hablar por WhatsApp</button>
+        <a class="btn btn-primary btn-lg" href="#/servicios">Ver servicios</a>
+        <button class="btn btn-outline btn-lg wa-only" type="button" onclick="openWA('Hola, deseo cotizar un trámite con ustedes.')">Hablar por WhatsApp</button>
       </div>
-      <div class="hero-stats" id="heroStats" style="display:none"></div>
+      <div class="hero-stats" id="heroStats" hidden></div>
     </div>
-  </section>
+  </div>
 
-  <section class="section container">
+  <div class="section container">
     <div class="section-head">
       <span class="eyebrow">Servicios destacados</span>
       <h2>Lo que <em>resolvemos</em> por usted.</h2>
       <p class="section-sub">Catálogo profesional de gestiones ante instituciones públicas y privadas.</p>
     </div>
     <div class="services-grid" id="featuredServices">
-      <div class="page-loading"><span class="spinner" style="border-color:var(--navy);border-top-color:transparent"></span> &nbsp; Cargando servicios...</div>
+      <div class="page-loading"><span class="spinner spinner-dark" aria-hidden="true"></span> Cargando servicios...</div>
     </div>
-    <div style="text-align:center;margin-top:32px">
-      <button class="btn btn-outline" onclick="go('services')">Ver todos los servicios</button>
+    <div class="section-more">
+      <a class="btn btn-outline" href="#/servicios">Ver todos los servicios</a>
     </div>
-  </section>
+  </div>
 
-  <section class="section container">
+  <div class="section container">
     <div class="section-head">
       <span class="eyebrow">Cómo funciona</span>
       <h2>Simple. Claro. <em>Sin sorpresas.</em></h2>
     </div>
-    <div class="steps">
-      <div class="step"><div class="step-num">01</div><div><h3>Seleccione su trámite</h3><p>Explore el catálogo y elija el servicio que necesita.</p></div></div>
-      <div class="step"><div class="step-num">02</div><div><h3>Realice el pago</h3><p>Elija su método: SINPE, transferencia o depósito. Suba el comprobante.</p></div></div>
-      <div class="step"><div class="step-num">03</div><div><h3>Nos encargamos</h3><p>Verificamos el pago e iniciamos la gestión de inmediato.</p></div></div>
-      <div class="step"><div class="step-num">04</div><div><h3>Reciba el resultado</h3><p>Comunicación por WhatsApp durante todo el proceso.</p></div></div>
-    </div>
-  </section>
+    <ol class="steps">
+      <li class="step"><div class="step-num" aria-hidden="true">01</div><div><h3>Seleccione su trámite</h3><p>Explore el catálogo y elija el servicio que necesita.</p></div></li>
+      <li class="step"><div class="step-num" aria-hidden="true">02</div><div><h3>Realice el pago</h3><p>Elija su método: SINPE, transferencia o depósito. Suba el comprobante.</p></div></li>
+      <li class="step"><div class="step-num" aria-hidden="true">03</div><div><h3>Nos encargamos</h3><p>Verificamos el pago e iniciamos la gestión de inmediato.</p></div></li>
+      <li class="step"><div class="step-num" aria-hidden="true">04</div><div><h3>Reciba el resultado</h3><p>Comunicación por WhatsApp durante todo el proceso.</p></div></li>
+    </ol>
+  </div>
 
-  <section class="benefits">
+  <div class="benefits">
     <div class="benefits-inner">
       <div class="section-head">
         <span class="eyebrow">Por qué elegirnos</span>
         <h2>Respaldo <em>profesional</em> en cada paso.</h2>
       </div>
       <div class="benefits-grid">
-        <div class="benefit"><div class="benefit-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2l3 7h7l-5.5 4 2 8L12 17l-6.5 4 2-8L2 9h7z"/></svg></div><h3>Experiencia verificable</h3><p>Equipo con trayectoria y conocimiento profundo de los procesos institucionales.</p></div>
-        <div class="benefit"><div class="benefit-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div><h3>Transacciones seguras</h3><p>Sus datos y operaciones quedan protegidos bajo los más altos estándares.</p></div>
-        <div class="benefit"><div class="benefit-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><h3>Respuesta oportuna</h3><p>Comunicación activa durante todo el proceso por WhatsApp.</p></div>
-        <div class="benefit"><div class="benefit-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><polyline points="20 6 9 17 4 12"/></svg></div><h3>Precios transparentes</h3><p>Costos publicados de forma clara. Sin cobros ocultos.</p></div>
-        <div class="benefit"><div class="benefit-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg></div><h3>Documentación ordenada</h3><p>Historial de órdenes disponible desde su cuenta.</p></div>
-        <div class="benefit"><div class="benefit-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="7" r="4"/></svg></div><h3>Atención dedicada</h3><p>Un gestor asignado a su caso. Trato cercano y profesional.</p></div>
+        <div class="benefit"><div class="benefit-ico" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2l3 7h7l-5.5 4 2 8L12 17l-6.5 4 2-8L2 9h7z"/></svg></div><h3>Experiencia verificable</h3><p>Equipo con trayectoria y conocimiento profundo de los procesos institucionales.</p></div>
+        <div class="benefit"><div class="benefit-ico" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div><h3>Transacciones seguras</h3><p>Sus datos y operaciones quedan protegidos bajo los más altos estándares.</p></div>
+        <div class="benefit"><div class="benefit-ico" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><h3>Respuesta oportuna</h3><p>Comunicación activa durante todo el proceso por WhatsApp.</p></div>
+        <div class="benefit"><div class="benefit-ico" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><polyline points="20 6 9 17 4 12"/></svg></div><h3>Precios transparentes</h3><p>Costos publicados de forma clara. Sin cobros ocultos.</p></div>
+        <div class="benefit"><div class="benefit-ico" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg></div><h3>Documentación ordenada</h3><p>Historial de órdenes disponible desde su cuenta.</p></div>
+        <div class="benefit"><div class="benefit-ico" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="7" r="4"/></svg></div><h3>Atención dedicada</h3><p>Un gestor asignado a su caso. Trato cercano y profesional.</p></div>
       </div>
     </div>
-  </section>
+  </div>
 
-  <section class="cta-final container-narrow">
+  <div class="cta-final container-narrow">
     <span class="eyebrow">¿Listo para empezar?</span>
     <h2>Gestione su trámite <em>hoy mismo.</em></h2>
     <p class="section-sub">Explore el catálogo y comience en minutos.</p>
-    <div class="hero-ctas" style="justify-content:center">
-      <button class="btn btn-primary btn-lg" onclick="go('services')">Ver servicios</button>
-      <button class="btn btn-ghost btn-lg" onclick="go('contact')">Contáctenos</button>
-    </div>
-  </section>
-</div>
-
-<!-- ==================== SERVICIOS ==================== -->
-<div class="page" id="page-services">
-  <div class="container" style="padding-top:40px;padding-bottom:60px">
-    <div class="breadcrumb"><a onclick="go('home')">Inicio</a><span class="sep">/</span><span>Servicios</span></div>
-    <div class="section-head">
-      <span class="eyebrow">Catálogo</span>
-      <h2>Todos nuestros <em>servicios.</em></h2>
-      <p class="section-sub">Filtre por categoría para encontrar el trámite que necesita.</p>
-    </div>
-    <div class="cat-filters" id="catFilters"></div>
-    <div class="services-grid" id="allServices">
-      <div class="page-loading"><span class="spinner" style="border-color:var(--navy);border-top-color:transparent"></span> &nbsp; Cargando...</div>
+    <div class="hero-ctas hero-ctas-center">
+      <a class="btn btn-primary btn-lg" href="#/servicios">Ver servicios</a>
+      <a class="btn btn-ghost btn-lg" href="#/contacto">Contáctenos</a>
     </div>
   </div>
-</div>
+</section>
+
+<!-- ==================== SERVICIOS ==================== -->
+<section class="page" id="page-services" aria-label="Servicios">
+  <div class="container page-pad">
+    <nav class="breadcrumb" aria-label="Ruta"><a href="#/">Inicio</a><span class="sep" aria-hidden="true">/</span><span>Servicios</span></nav>
+    <div class="section-head">
+      <span class="eyebrow">Catálogo</span>
+      <h1 class="page-h">Todos nuestros <em>servicios.</em></h1>
+      <p class="section-sub">Filtre por categoría para encontrar el trámite que necesita.</p>
+    </div>
+    <div class="cat-filters" id="catFilters" role="toolbar" aria-label="Filtrar por categoría"></div>
+    <div class="services-grid" id="allServices">
+      <div class="page-loading"><span class="spinner spinner-dark" aria-hidden="true"></span> Cargando...</div>
+    </div>
+  </div>
+</section>
 
 <!-- ==================== DETALLE ==================== -->
-<div class="page" id="page-service-detail">
-  <div class="container" style="padding-top:28px;padding-bottom:60px">
-    <div class="breadcrumb"><a onclick="go('home')">Inicio</a><span class="sep">/</span><a onclick="go('services')">Servicios</a><span class="sep">/</span><span id="crumbService">—</span></div>
+<section class="page" id="page-service-detail" aria-label="Detalle del servicio">
+  <div class="container page-pad-sm">
+    <nav class="breadcrumb" aria-label="Ruta"><a href="#/">Inicio</a><span class="sep" aria-hidden="true">/</span><a href="#/servicios">Servicios</a><span class="sep" aria-hidden="true">/</span><span id="crumbService">—</span></nav>
     <div class="detail-hero">
+      <img class="detail-image" id="detailImage" alt="" hidden>
       <span class="detail-cat" id="detailCat">—</span>
       <h1 id="detailName">—</h1>
       <p class="lead" id="detailShort">—</p>
     </div>
     <div class="detail-layout">
       <div class="detail-body">
-        <h3>Descripción</h3>
+        <h2>Descripción</h2>
         <p id="detailLong">—</p>
-        <h3>Documentos requeridos</h3>
+        <h2>Documentos requeridos</h2>
         <ul id="detailDocs"></ul>
       </div>
       <aside>
@@ -234,258 +248,346 @@
           <div class="price-hint">Precio total, incluye gestión.</div>
           <div class="meta">
             <div class="meta-row"><span>Tiempo estimado</span><span id="detailTime">—</span></div>
-            <div class="meta-row"><span>Modalidad</span><span>100% en línea</span></div>
-            <div class="meta-row"><span>Cobertura</span><span>Nacional</span></div>
-            <div class="meta-row" id="pointsRow" style="display:none"><span>Puntos que gana</span><span id="detailPoints">—</span></div>
+            <div class="meta-row" id="modalityRow" hidden><span>Modalidad</span><span id="detailModality"></span></div>
+            <div class="meta-row" id="coverageRow" hidden><span>Cobertura</span><span id="detailCoverage"></span></div>
+            <div class="meta-row" id="pointsRow" hidden><span>Puntos que gana</span><span id="detailPoints">—</span></div>
           </div>
-          <button class="btn btn-primary btn-block btn-lg" onclick="addToCartFromDetail()">Agregar al carrito</button>
-          <button class="btn btn-ghost btn-block" style="margin-top:8px" onclick="openWA('Hola, tengo una consulta sobre el servicio de ' + (currentService?.name||''))">Consultar por WhatsApp</button>
+          <button class="btn btn-primary btn-block btn-lg" type="button" onclick="addToCartFromDetail()">Agregar al carrito</button>
+          <button class="btn btn-ghost btn-block mt-8 wa-only" type="button" onclick="openWA('Hola, tengo una consulta sobre el servicio de ' + (currentService?.name || ''))">Consultar por WhatsApp</button>
         </div>
       </aside>
     </div>
   </div>
-</div>
+</section>
 
 <!-- ==================== CARRITO ==================== -->
-<div class="page" id="page-cart">
-  <div class="container-narrow" style="padding:40px 20px 60px">
-    <div class="breadcrumb"><a onclick="go('home')">Inicio</a><span class="sep">/</span><span>Carrito</span></div>
+<section class="page" id="page-cart" aria-label="Carrito">
+  <div class="container-narrow page-pad">
+    <nav class="breadcrumb" aria-label="Ruta"><a href="#/">Inicio</a><span class="sep" aria-hidden="true">/</span><span>Carrito</span></nav>
     <div class="section-head">
       <span class="eyebrow">Su selección</span>
-      <h2>Carrito.</h2>
+      <h1 class="page-h">Carrito.</h1>
     </div>
     <div id="cartContent"></div>
   </div>
-</div>
+</section>
 
 <!-- ==================== CHECKOUT ==================== -->
-<div class="page" id="page-checkout">
-  <div class="container-narrow" style="padding:40px 20px 60px">
-    <div class="breadcrumb"><a onclick="go('cart')">Carrito</a><span class="sep">/</span><span>Pago</span></div>
+<section class="page" id="page-checkout" aria-label="Pago">
+  <div class="container-narrow page-pad">
+    <nav class="breadcrumb" aria-label="Ruta"><a href="#/carrito">Carrito</a><span class="sep" aria-hidden="true">/</span><span>Pago</span></nav>
     <div class="section-head">
       <span class="eyebrow">Finalizar compra</span>
-      <h2>Datos y pago.</h2>
+      <h1 class="page-h">Datos y pago.</h1>
     </div>
 
-    <div id="checkoutLoginCta" class="form-card" style="display:none;text-align:center">
-      <h3 class="serif" style="font-size:22px;margin-bottom:10px;color:var(--navy)">Inicie sesión para continuar</h3>
-      <p style="color:var(--ink-muted);margin-bottom:20px">Necesita una cuenta para registrar su orden y dar seguimiento al trámite.</p>
-      <button class="btn btn-primary btn-block" onclick="go('login')">Iniciar sesión</button>
-      <button class="btn btn-outline btn-block" style="margin-top:8px" onclick="go('register')">Crear cuenta nueva</button>
+    <div id="checkoutLoginCta" class="form-card center" hidden>
+      <h2 class="card-title">Inicie sesión para continuar</h2>
+      <p class="card-text">Necesita una cuenta para registrar su orden y dar seguimiento al trámite.</p>
+      <div class="stack">
+        <a class="btn btn-primary btn-block" href="#/ingresar?volver=pago">Iniciar sesión</a>
+        <a class="btn btn-outline btn-block" href="#/registro">Crear cuenta nueva</a>
+      </div>
     </div>
 
-    <form id="checkoutForm" onsubmit="completeCheckout(event)" class="form-card" style="display:none">
-      <h3 class="serif" style="font-size:18px;margin-bottom:14px;color:var(--navy)">Información de contacto</h3>
+    <form id="checkoutForm" onsubmit="completeCheckout(event)" class="form-card" hidden novalidate>
+      <h2 class="form-section-title">Información de contacto</h2>
       <div class="field-row">
-        <div class="field"><label>Nombre completo</label><input type="text" id="coName" required></div>
-        <div class="field"><label>Cédula</label><input type="text" id="coIdCard" required></div>
+        <div class="field"><label for="coName">Nombre completo</label><input type="text" id="coName" required autocomplete="name" maxlength="150"></div>
+        <div class="field"><label for="coIdCard">Cédula</label><input type="text" id="coIdCard" required maxlength="30"></div>
       </div>
       <div class="field-row">
-        <div class="field"><label>Correo electrónico</label><input type="email" id="coEmail" required readonly></div>
-        <div class="field"><label>Teléfono</label><input type="tel" id="coPhone" required></div>
+        <div class="field"><label for="coEmail">Correo electrónico</label><input type="email" id="coEmail" required readonly></div>
+        <div class="field"><label for="coPhone">Teléfono</label><input type="tel" id="coPhone" required autocomplete="tel" maxlength="30"></div>
       </div>
-      <div class="field"><label>Dirección de envío</label><input type="text" id="coAddress" required></div>
+      <div class="field"><label for="coAddress">Dirección de envío</label><input type="text" id="coAddress" required autocomplete="street-address" maxlength="300"></div>
 
       <!-- CUPÓN Y PUNTOS -->
-      <h3 class="serif" style="font-size:18px;margin:24px 0 14px;color:var(--navy)">Descuentos</h3>
+      <h2 class="form-section-title spaced">Descuentos</h2>
       <div>
         <div class="coupon-box" id="couponInput">
-          <input type="text" id="couponCode" placeholder="CÓDIGO DE CUPÓN">
-          <button type="button" class="btn btn-outline btn-sm" onclick="applyCoupon()">Aplicar</button>
+          <label for="couponCode" class="sr-only">Código de cupón</label>
+          <input type="text" id="couponCode" placeholder="CÓDIGO DE CUPÓN" maxlength="40" autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();applyCoupon()}">
+          <button type="button" class="btn btn-outline btn-sm" onclick="applyCoupon()" id="couponBtn">Aplicar</button>
         </div>
-        <div id="couponApplied" style="display:none"></div>
+        <div id="couponApplied" hidden></div>
       </div>
-      <div id="pointsBox" class="points-box" style="display:none">
+      <div id="pointsBox" class="points-box" hidden>
         Tiene <strong id="userPointsDisplay">0</strong> puntos disponibles (equivalen a <strong id="userPointsCRC">₡0</strong>).
         <div class="points-toggle">
           <input type="checkbox" id="usePoints" onchange="togglePoints()">
           <label for="usePoints">Usar mis puntos en esta compra</label>
         </div>
+        <div class="field-hint" id="pointsComboHint" hidden>Los puntos no se pueden combinar con un cupón.</div>
       </div>
 
       <!-- MÉTODOS DE PAGO -->
-      <h3 class="serif" style="font-size:18px;margin:24px 0 14px;color:var(--navy)">Método de pago</h3>
-      <div class="payment-methods" id="paymentMethods"></div>
+      <h2 class="form-section-title spaced">Método de pago</h2>
+      <div class="payment-methods" id="paymentMethods" role="radiogroup" aria-label="Método de pago"></div>
 
-      <div class="summary" id="checkoutSummary" style="margin-bottom:20px"></div>
+      <div class="summary" id="checkoutSummary"></div>
 
+      <div id="checkoutError" class="field-error mb-10" role="alert" hidden></div>
       <button type="submit" class="btn btn-primary btn-block btn-lg" id="submitOrderBtn">Confirmar orden</button>
-      <p style="text-align:center;font-size:12px;color:var(--ink-subtle);margin-top:12px">🔒 Luego de confirmar podrá subir el comprobante de pago.</p>
+      <p class="form-note">🔒 Luego de confirmar podrá subir el comprobante de pago.</p>
     </form>
   </div>
-</div>
+</section>
 
 <!-- ==================== CONFIRMACIÓN / SUBIR COMPROBANTE ==================== -->
-<div class="page" id="page-confirmation">
-  <div class="container-narrow" style="padding:40px 20px 60px">
+<section class="page" id="page-confirmation" aria-label="Orden registrada">
+  <div class="container-narrow page-pad">
     <div class="success-hero">
-      <div class="success-check">
+      <div class="success-check" aria-hidden="true">
         <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
       </div>
       <h1>Orden registrada</h1>
       <p>Su orden fue registrada exitosamente. Solo falta un paso para iniciar la gestión.</p>
-      <div class="order-ref" id="confirmRef">ORD-000000</div>
+      <div class="order-ref" id="confirmRef">—</div>
     </div>
 
-    <div class="form-card" style="margin-bottom:16px">
-      <h3 class="serif" style="font-size:20px;color:var(--navy);margin-bottom:10px">1. Realice el pago</h3>
-      <p style="font-size:13.5px;color:var(--ink-muted);margin-bottom:14px">Use los datos a continuación para transferir el monto exacto.</p>
+    <div class="form-card mb-16">
+      <h2 class="card-title-lg">1. Realice el pago</h2>
+      <p class="card-text-sm">Use los datos a continuación para transferir el monto exacto.</p>
       <div id="confirmPaymentDetails"></div>
     </div>
 
-    <div class="form-card" style="margin-bottom:16px">
-      <h3 class="serif" style="font-size:20px;color:var(--navy);margin-bottom:6px">2. Suba el comprobante</h3>
-      <p style="font-size:13.5px;color:var(--ink-muted);margin-bottom:14px">Una vez realizado el pago, adjunte el comprobante. Lo verificaremos en menos de 2 horas hábiles.</p>
-      <div class="upload-area" id="uploadArea" onclick="document.getElementById('receiptFile').click()">
-        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        <p><strong>Toque para seleccionar</strong> o arrastre un archivo aquí</p>
-        <p class="upload-hint">PDF, JPG, PNG, WEBP — máximo 10 MB</p>
-      </div>
-      <input type="file" id="receiptFile" accept="image/jpeg,image/png,image/webp,application/pdf" style="display:none" onchange="handleReceiptFile()">
+    <div class="form-card mb-16">
+      <h2 class="card-title-lg">2. Suba el comprobante</h2>
+      <p class="card-text-sm">Una vez realizado el pago, adjunte el comprobante.<span id="verifyPromise"></span></p>
+      <div class="upload-area" id="uploadArea" role="button" tabindex="0" aria-label="Seleccionar o arrastrar el comprobante"
+           onclick="document.getElementById('receiptFile').click()"
+           onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"></div>
+      <input type="file" id="receiptFile" accept="image/jpeg,image/png,image/webp,application/pdf" hidden onchange="handleReceiptFile(this.files[0])">
       <div class="field">
-        <label>Número de referencia <span style="color:var(--ink-subtle);font-weight:400">(opcional)</span></label>
-        <input type="text" id="receiptRef" placeholder="Ej. número del comprobante SINPE">
+        <label for="receiptRef">Número de referencia <span class="optional">(opcional)</span></label>
+        <input type="text" id="receiptRef" placeholder="Ej. número del comprobante SINPE" maxlength="100">
         <div class="field-hint">Ayuda a verificar más rápido su pago.</div>
       </div>
-      <button class="btn btn-primary btn-block btn-lg" id="uploadReceiptBtn" onclick="uploadReceipt()" disabled>Enviar comprobante</button>
+      <button class="btn btn-primary btn-block btn-lg" type="button" id="uploadReceiptBtn" onclick="uploadReceipt()" disabled>Enviar comprobante</button>
     </div>
 
-    <div class="form-card" style="text-align:center">
-      <h3 class="serif" style="font-size:18px;color:var(--navy);margin-bottom:10px">¿Necesita ayuda?</h3>
-      <p style="font-size:13.5px;color:var(--ink-muted);margin-bottom:14px">Si prefiere, envíenos el comprobante por WhatsApp y nosotros lo cargamos.</p>
-      <button class="btn btn-wa btn-block" onclick="openWA('Hola, realicé la orden ' + (document.getElementById('confirmRef').innerText) + ' y deseo enviar el comprobante por aquí.')">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 5L2 22l5.2-1.4c1.4.8 3.1 1.2 4.8 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2z"/></svg>
-        Continuar por WhatsApp
-      </button>
-      <button class="btn btn-ghost btn-block" style="margin-top:8px" onclick="go('orders')">Ver mis compras</button>
+    <div class="form-card center">
+      <h2 class="card-title">¿Necesita ayuda?</h2>
+      <p class="card-text-sm wa-only">Si prefiere, envíenos el comprobante por WhatsApp y nosotros lo cargamos.</p>
+      <div class="stack">
+        <button class="btn btn-wa btn-block wa-only" type="button" onclick="openWA('Hola, realicé la orden ' + (currentOrder?.reference || '') + ' y deseo enviar el comprobante por aquí.')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 5L2 22l5.2-1.4c1.4.8 3.1 1.2 4.8 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2z"/></svg>
+          Continuar por WhatsApp
+        </button>
+        <a class="btn btn-ghost btn-block" href="#/compras">Ver mis compras</a>
+      </div>
     </div>
   </div>
-</div>
+</section>
 
 <!-- ==================== LOGIN ==================== -->
-<div class="page" id="page-login">
-  <div class="container-narrow" style="padding:40px 20px 60px">
+<section class="page" id="page-login" aria-label="Iniciar sesión">
+  <div class="container-narrow page-pad">
     <div class="form-card">
       <div class="form-head">
-        <h2>Iniciar sesión</h2>
+        <h1>Iniciar sesión</h1>
         <p>Acceda a su cuenta para gestionar sus trámites</p>
       </div>
+      <div id="loginNotice" class="banner banner-info" role="status" hidden></div>
       <form onsubmit="doLogin(event)">
-        <div class="field"><label>Correo electrónico</label><input type="email" id="loginEmail" required placeholder="correo@ejemplo.cr"></div>
-        <div class="field"><label>Contraseña</label><input type="password" id="loginPassword" required placeholder="••••••••"></div>
-        <div id="loginError" class="field-error" style="display:none;margin-bottom:10px"></div>
+        <div class="field"><label for="loginEmail">Correo electrónico</label><input type="email" id="loginEmail" required placeholder="correo@ejemplo.cr" autocomplete="email"></div>
+        <div class="field"><label for="loginPassword">Contraseña</label><input type="password" id="loginPassword" required placeholder="••••••••" autocomplete="current-password"></div>
+        <div class="field-link"><a href="#/recuperar">¿Olvidó su contraseña?</a></div>
+        <div id="loginError" class="field-error mb-10" role="alert" hidden></div>
         <button type="submit" class="btn btn-primary btn-block btn-lg" id="loginBtn">Ingresar</button>
       </form>
       <div class="form-divider">o</div>
-      <button class="btn btn-outline btn-block" onclick="go('register')">Crear cuenta nueva</button>
+      <a class="btn btn-outline btn-block" href="#/registro">Crear cuenta nueva</a>
     </div>
   </div>
-</div>
+</section>
 
 <!-- ==================== REGISTRO ==================== -->
-<div class="page" id="page-register">
-  <div class="container-narrow" style="padding:40px 20px 60px">
-    <div class="form-card">
+<section class="page" id="page-register" aria-label="Crear cuenta">
+  <div class="container-narrow page-pad">
+    <div class="form-card" id="registerCard">
       <div class="form-head">
-        <h2>Crear cuenta</h2>
+        <h1>Crear cuenta</h1>
         <p>Regístrese para acceder a todos los servicios</p>
       </div>
       <form onsubmit="doRegister(event)">
-        <div class="field"><label>Nombre completo</label><input type="text" id="regName" required placeholder="Juan Pérez Solano"></div>
+        <div class="field"><label for="regName">Nombre completo</label><input type="text" id="regName" required placeholder="Juan Pérez Solano" autocomplete="name" maxlength="150"></div>
         <div class="field-row">
-          <div class="field"><label>Cédula</label><input type="text" id="regIdCard" required placeholder="1-1234-5678"></div>
-          <div class="field"><label>Teléfono</label><input type="tel" id="regPhone" required placeholder="8888-8888"></div>
+          <div class="field"><label for="regIdCard">Cédula</label><input type="text" id="regIdCard" required placeholder="1-1234-5678" maxlength="30"></div>
+          <div class="field"><label for="regPhone">Teléfono</label><input type="tel" id="regPhone" required placeholder="8888-8888" autocomplete="tel" maxlength="30"></div>
         </div>
-        <div class="field"><label>Empresa <span style="color:var(--ink-subtle);font-weight:400">(opcional)</span></label><input type="text" id="regCompany" placeholder="Nombre de la empresa"></div>
-        <div class="field"><label>Dirección</label><input type="text" id="regAddress" required placeholder="Provincia, cantón, distrito"></div>
+        <div class="field"><label for="regCompany">Empresa <span class="optional">(opcional)</span></label><input type="text" id="regCompany" placeholder="Nombre de la empresa" autocomplete="organization" maxlength="150"></div>
+        <div class="field"><label for="regAddress">Dirección</label><input type="text" id="regAddress" required placeholder="Provincia, cantón, distrito" autocomplete="street-address" maxlength="300"></div>
         <div class="field-row">
-          <div class="field"><label>Correo electrónico</label><input type="email" id="regEmail" required placeholder="correo@ejemplo.cr"></div>
-          <div class="field"><label>Correo de facturación</label><input type="email" id="regBillingEmail" placeholder="(opcional)"></div>
+          <div class="field"><label for="regEmail">Correo electrónico</label><input type="email" id="regEmail" required placeholder="correo@ejemplo.cr" autocomplete="email"></div>
+          <div class="field"><label for="regBillingEmail">Correo de facturación <span class="optional">(opcional)</span></label><input type="email" id="regBillingEmail" placeholder="Si es distinto"></div>
         </div>
-        <div class="field"><label>Contraseña</label><input type="password" id="regPassword" required placeholder="Mínimo 6 caracteres" minlength="6"><div class="field-hint">Use al menos 6 caracteres</div></div>
-        <div id="regError" class="field-error" style="display:none;margin-bottom:10px"></div>
+        <div class="field"><label for="regPassword">Contraseña</label><input type="password" id="regPassword" required placeholder="Mínimo 8 caracteres" minlength="8" autocomplete="new-password"><div class="field-hint">Use al menos 8 caracteres.</div></div>
+        <div class="field check-field">
+          <input type="checkbox" id="regTerms" required>
+          <label for="regTerms">Acepto los <a href="#/terminos" target="_blank" rel="noopener">términos y condiciones</a> y la <a href="#/privacidad" target="_blank" rel="noopener">política de privacidad</a>.</label>
+        </div>
+        <div id="regError" class="field-error mb-10" role="alert" hidden></div>
         <button type="submit" class="btn btn-primary btn-block btn-lg" id="registerBtn">Crear cuenta</button>
       </form>
-      <p class="form-foot">¿Ya tiene cuenta? <a onclick="go('login')">Inicie sesión</a></p>
+      <p class="form-foot">¿Ya tiene cuenta? <a href="#/ingresar">Inicie sesión</a></p>
+    </div>
+    <div class="form-card center" id="registerDone" hidden>
+      <div class="success-check sm" aria-hidden="true">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/></svg>
+      </div>
+      <h1 class="card-title-lg">Revise su correo</h1>
+      <p class="card-text">Le enviamos un enlace a <strong id="registerDoneEmail"></strong> para confirmar su cuenta. Después de confirmarla podrá iniciar sesión.</p>
+      <a class="btn btn-primary btn-block" href="#/ingresar">Ir a iniciar sesión</a>
     </div>
   </div>
-</div>
+</section>
+
+<!-- ==================== RECUPERAR CONTRASEÑA ==================== -->
+<section class="page" id="page-recover" aria-label="Recuperar contraseña">
+  <div class="container-narrow page-pad">
+    <div class="form-card">
+      <div class="form-head">
+        <h1>Recuperar contraseña</h1>
+        <p>Le enviaremos un enlace para crear una contraseña nueva</p>
+      </div>
+      <form onsubmit="doRecover(event)">
+        <div class="field"><label for="recoverEmail">Correo electrónico</label><input type="email" id="recoverEmail" required autocomplete="email"></div>
+        <div id="recoverMsg" class="mb-10" role="status" hidden></div>
+        <button type="submit" class="btn btn-primary btn-block btn-lg" id="recoverBtn">Enviar enlace</button>
+      </form>
+      <p class="form-foot"><a href="#/ingresar">Volver a iniciar sesión</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== NUEVA CONTRASEÑA ==================== -->
+<section class="page" id="page-new-password" aria-label="Nueva contraseña">
+  <div class="container-narrow page-pad">
+    <div class="form-card">
+      <div class="form-head">
+        <h1>Nueva contraseña</h1>
+        <p>Escriba la contraseña nueva para su cuenta</p>
+      </div>
+      <form onsubmit="doSetNewPassword(event)">
+        <div class="field"><label for="newPassword">Contraseña nueva</label><input type="password" id="newPassword" required minlength="8" autocomplete="new-password"><div class="field-hint">Mínimo 8 caracteres.</div></div>
+        <div class="field"><label for="newPassword2">Repita la contraseña</label><input type="password" id="newPassword2" required minlength="8" autocomplete="new-password"></div>
+        <div id="newPassError" class="field-error mb-10" role="alert" hidden></div>
+        <button type="submit" class="btn btn-primary btn-block btn-lg" id="newPassBtn">Guardar contraseña</button>
+      </form>
+    </div>
+  </div>
+</section>
 
 <!-- ==================== MI CUENTA ==================== -->
-<div class="page" id="page-account">
-  <div class="container-narrow" style="padding:40px 20px 60px">
-    <div class="breadcrumb"><a onclick="go('home')">Inicio</a><span class="sep">/</span><span>Mi cuenta</span></div>
+<section class="page" id="page-account" aria-label="Mi cuenta">
+  <div class="container-narrow page-pad">
+    <nav class="breadcrumb" aria-label="Ruta"><a href="#/">Inicio</a><span class="sep" aria-hidden="true">/</span><span>Mi cuenta</span></nav>
     <div class="section-head">
       <span class="eyebrow">Perfil</span>
-      <h2 id="accountGreeting">Hola.</h2>
+      <h1 class="page-h greet" id="accountGreeting">Hola.</h1>
       <p class="section-sub">Gestione su información personal y vea sus puntos acumulados.</p>
     </div>
     <form onsubmit="saveAccount(event)" class="form-card">
-      <div class="field"><label>Nombre completo</label><input type="text" id="accName"></div>
+      <div class="field"><label for="accName">Nombre completo</label><input type="text" id="accName" autocomplete="name" maxlength="150"></div>
       <div class="field-row">
-        <div class="field"><label>Cédula</label><input type="text" id="accIdCard"></div>
-        <div class="field"><label>Teléfono</label><input type="tel" id="accPhone"></div>
+        <div class="field"><label for="accIdCard">Cédula</label><input type="text" id="accIdCard" maxlength="30"></div>
+        <div class="field"><label for="accPhone">Teléfono</label><input type="tel" id="accPhone" autocomplete="tel" maxlength="30"></div>
       </div>
-      <div class="field"><label>Empresa</label><input type="text" id="accCompany"></div>
-      <div class="field"><label>Dirección</label><input type="text" id="accAddress"></div>
+      <div class="field"><label for="accCompany">Empresa</label><input type="text" id="accCompany" autocomplete="organization" maxlength="150"></div>
+      <div class="field"><label for="accAddress">Dirección</label><input type="text" id="accAddress" autocomplete="street-address" maxlength="300"></div>
       <div class="field-row">
-        <div class="field"><label>Correo</label><input type="email" id="accEmail" readonly></div>
-        <div class="field"><label>Correo de facturación</label><input type="email" id="accBillingEmail"></div>
+        <div class="field"><label for="accEmail">Correo</label><input type="email" id="accEmail" readonly></div>
+        <div class="field"><label for="accBillingEmail">Correo de facturación</label><input type="email" id="accBillingEmail" maxlength="200"></div>
       </div>
 
-      <div class="points-box" style="margin-top:20px">
+      <div class="points-box mt-20">
         Tiene <strong id="accPointsDisplay">0</strong> puntos acumulados.<br>
-        Su código de referido: <strong class="serif" style="letter-spacing:.1em;font-size:18px;color:var(--navy)" id="accReferralCode">—</strong>
+        Su código de referido: <strong class="serif ref-code" id="accReferralCode">—</strong>
       </div>
 
-      <button type="submit" class="btn btn-primary btn-block btn-lg" style="margin-top:16px">Guardar cambios</button>
-      <button type="button" class="btn btn-ghost btn-block" style="margin-top:8px;color:var(--danger)" onclick="doLogout()">Cerrar sesión</button>
+      <div class="stack mt-16">
+        <button type="submit" class="btn btn-primary btn-block btn-lg">Guardar cambios</button>
+        <a class="btn btn-ghost btn-block" href="#/recuperar">Cambiar contraseña</a>
+        <button type="button" class="btn btn-ghost btn-block text-danger" onclick="doLogout()">Cerrar sesión</button>
+      </div>
     </form>
   </div>
-</div>
+</section>
 
 <!-- ==================== MIS COMPRAS ==================== -->
-<div class="page" id="page-orders">
-  <div class="container-narrow" style="padding:40px 20px 60px">
-    <div class="breadcrumb"><a onclick="go('home')">Inicio</a><span class="sep">/</span><span>Mis compras</span></div>
+<section class="page" id="page-orders" aria-label="Mis compras">
+  <div class="container-narrow page-pad">
+    <nav class="breadcrumb" aria-label="Ruta"><a href="#/">Inicio</a><span class="sep" aria-hidden="true">/</span><span>Mis compras</span></nav>
     <div class="section-head">
       <span class="eyebrow">Historial</span>
-      <h2>Mis compras.</h2>
+      <h1 class="page-h">Mis compras.</h1>
       <p class="section-sub">Consulte el estado de sus trámites.</p>
     </div>
-    <div id="ordersList"><div class="page-loading"><span class="spinner" style="border-color:var(--navy);border-top-color:transparent"></span></div></div>
+    <div id="ordersList"><div class="page-loading"><span class="spinner spinner-dark" aria-hidden="true"></span></div></div>
   </div>
-</div>
+</section>
 
 <!-- ==================== CONTACTO ==================== -->
-<div class="page" id="page-contact">
-  <div class="container-narrow" style="padding:40px 20px 60px">
-    <div class="breadcrumb"><a onclick="go('home')">Inicio</a><span class="sep">/</span><span>Contacto</span></div>
+<section class="page" id="page-contact" aria-label="Contacto">
+  <div class="container-narrow page-pad">
+    <nav class="breadcrumb" aria-label="Ruta"><a href="#/">Inicio</a><span class="sep" aria-hidden="true">/</span><span>Contacto</span></nav>
     <div class="section-head">
       <span class="eyebrow">Contáctenos</span>
-      <h2>Estamos <em>para ayudarle.</em></h2>
+      <h1 class="page-h">Estamos <em>para ayudarle.</em></h1>
       <p class="section-sub">Escríbanos o contáctenos directamente por WhatsApp.</p>
     </div>
-    <div class="form-card" style="margin-bottom:24px">
-      <button class="btn btn-wa btn-block btn-lg" id="contactWABtn" style="display:none" onclick="openWA('Hola, me gustaría consultar sobre sus servicios.')">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 5L2 22l5.2-1.4c1.4.8 3.1 1.2 4.8 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2z"/></svg>
+    <div class="form-card mb-24">
+      <button class="btn btn-wa btn-block btn-lg" type="button" id="contactWABtn" hidden onclick="openWA('Hola, me gustaría consultar sobre sus servicios.')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 5L2 22l5.2-1.4c1.4.8 3.1 1.2 4.8 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2z"/></svg>
         WhatsApp: <span id="contactWA"></span>
       </button>
-      <div style="display:grid;grid-template-columns:1fr;gap:16px;margin-top:20px;padding-top:20px;border-top:1px solid var(--line)">
-        <div id="contactEmailRow" style="display:none"><div style="font-size:12px;color:var(--ink-subtle);letter-spacing:.05em;text-transform:uppercase;margin-bottom:4px">Correo</div><div style="font-size:15px;color:var(--navy)" id="contactEmail"></div></div>
-        <div id="contactHoursRow" style="display:none"><div style="font-size:12px;color:var(--ink-subtle);letter-spacing:.05em;text-transform:uppercase;margin-bottom:4px">Horario</div><div style="font-size:15px;color:var(--navy)" id="contactHours"></div></div>
-      </div>
+      <dl class="contact-list">
+        <div id="contactEmailRow" hidden><dt>Correo</dt><dd><a id="contactEmail"></a></dd></div>
+        <div id="contactHoursRow" hidden><dt>Horario</dt><dd id="contactHours"></dd></div>
+        <div id="contactAddressRow" hidden><dt>Dirección</dt><dd id="contactAddress"></dd></div>
+      </dl>
     </div>
   </div>
-</div>
+</section>
+
+<!-- ==================== PRIVACIDAD / TÉRMINOS ==================== -->
+<section class="page" id="page-privacy" aria-label="Política de privacidad">
+  <div class="container-narrow page-pad">
+    <nav class="breadcrumb" aria-label="Ruta"><a href="#/">Inicio</a><span class="sep" aria-hidden="true">/</span><span>Privacidad</span></nav>
+    <h1 class="page-h legal-title">Política de privacidad</h1>
+    <div class="legal-text" id="privacyText"></div>
+  </div>
+</section>
+<section class="page" id="page-terms" aria-label="Términos y condiciones">
+  <div class="container-narrow page-pad">
+    <nav class="breadcrumb" aria-label="Ruta"><a href="#/">Inicio</a><span class="sep" aria-hidden="true">/</span><span>Términos</span></nav>
+    <h1 class="page-h legal-title">Términos y condiciones</h1>
+    <div class="legal-text" id="termsText"></div>
+  </div>
+</section>
+
+<!-- ==================== NO ENCONTRADO ==================== -->
+<section class="page" id="page-not-found" aria-label="Página no encontrada">
+  <div class="container-narrow page-pad">
+    <div class="empty-state">
+      <h1 class="card-title-lg">Página no encontrada</h1>
+      <p>La dirección no existe o el servicio ya no está disponible.</p>
+      <a class="btn btn-primary" href="#/servicios">Ver servicios</a>
+    </div>
+  </div>
+</section>
+
+</main>
 
 <!-- ==================== WA FLOTANTE ==================== -->
-<button class="wa-float" onclick="openWA('Hola, deseo consultar sobre sus servicios.')" aria-label="WhatsApp">
-  <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.8.9-1 1.1-.2.2-.4.2-.7.1-.3-.1-1.2-.5-2.4-1.5-.9-.8-1.4-1.8-1.6-2.1-.2-.3 0-.5.1-.6l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.1-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4 0 1.4 1 2.8 1.2 3 .1.2 2 3 4.8 4.2.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.6-.1 1.7-.7 1.9-1.3.2-.7.2-1.2.2-1.3-.1-.1-.3-.2-.6-.3z"/><path d="M12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 5L2 22l5.2-1.4c1.4.8 3.1 1.2 4.8 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18c-1.5 0-3-.4-4.3-1.2l-.3-.2L4.3 19.4l.9-3.1-.2-.3c-.8-1.3-1.3-2.8-1.3-4.4 0-4.5 3.7-8.2 8.3-8.2 4.5 0 8.2 3.7 8.2 8.3 0 4.5-3.7 8.3-8.2 8.3z"/></svg>
+<button class="wa-float wa-only" type="button" onclick="openWA('Hola, deseo consultar sobre sus servicios.')" aria-label="Escribir por WhatsApp">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.8.9-1 1.1-.2.2-.4.2-.7.1-.3-.1-1.2-.5-2.4-1.5-.9-.8-1.4-1.8-1.6-2.1-.2-.3 0-.5.1-.6l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.1-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4 0 1.4 1 2.8 1.2 3 .1.2 2 3 4.8 4.2.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.6-.1 1.7-.7 1.9-1.3.2-.7.2-1.2.2-1.3-.1-.1-.3-.2-.6-.3z"/><path d="M12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 5L2 22l5.2-1.4c1.4.8 3.1 1.2 4.8 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18c-1.5 0-3-.4-4.3-1.2l-.3-.2L4.3 19.4l.9-3.1-.2-.3c-.8-1.3-1.3-2.8-1.3-4.4 0-4.5 3.7-8.2 8.3-8.2 4.5 0 8.2 3.7 8.2 8.3 0 4.5-3.7 8.3-8.2 8.3z"/></svg>
 </button>
 
-<div class="toast" id="toast">
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+<div class="toast" id="toast" role="status" aria-live="polite">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
   <span id="toastMsg">Listo</span>
 </div>
 
@@ -493,42 +595,47 @@
   <div class="footer-inner">
     <div class="footer-top">
       <div class="footer-brand">
-        <div class="logo"><div class="logo-mark">T</div><span>Tramitá</span></div>
+        <div class="logo"><span class="logo-mark" aria-hidden="true">T</span><span>Tramitá</span></div>
         <p>Servicios profesionales de tramitología en Costa Rica.</p>
       </div>
       <div class="footer-col">
-        <h4>Servicios</h4>
+        <h2>Servicios</h2>
         <ul>
-          <li><a onclick="currentCat='all';go('services')">Catálogo completo</a></li>
+          <li><a href="#/servicios" onclick="currentCat='all'">Catálogo completo</a></li>
         </ul>
         <ul id="footerCategories"></ul>
       </div>
       <div class="footer-col">
-        <h4>Cuenta</h4>
+        <h2>Cuenta</h2>
         <ul>
-          <li><a onclick="go('login')">Iniciar sesión</a></li>
-          <li><a onclick="go('register')">Crear cuenta</a></li>
-          <li><a onclick="go('orders')">Mis compras</a></li>
+          <li class="guest-only"><a href="#/ingresar">Iniciar sesión</a></li>
+          <li class="guest-only"><a href="#/registro">Crear cuenta</a></li>
+          <li><a href="#/compras">Mis compras</a></li>
         </ul>
       </div>
       <div class="footer-col">
-        <h4>Contacto</h4>
+        <h2>Contacto</h2>
         <ul>
-          <li id="footerEmail" style="display:none"></li>
-          <li id="footerPhone" style="display:none"></li>
-          <li id="footerAddress" style="display:none"></li>
+          <li id="footerEmail" hidden></li>
+          <li id="footerPhone" hidden></li>
+          <li id="footerAddress" hidden></li>
         </ul>
       </div>
     </div>
     <div class="footer-bot">
       <span id="footerCopy"></span>
+      <span class="footer-legal"><a href="#/privacidad">Privacidad</a><a href="#/terminos">Términos</a></span>
     </div>
   </div>
 </footer>
 
+<noscript><p class="noscript">Para usar Tramitá necesita activar JavaScript en su navegador.</p></noscript>
+
 <script src="js/core/config.js"></script>
 <script src="js/core/state.js"></script>
 <script src="js/utils/helpers.js"></script>
+<script src="js/utils/errors.js"></script>
+<script src="js/utils/icons.js"></script>
 <script src="js/ui/header.js"></script>
 <script src="js/core/router.js"></script>
 <script src="js/core/data-loader.js"></script>
@@ -541,6 +648,7 @@
 <script src="js/features/order-create.js"></script>
 <script src="js/features/receipts.js"></script>
 <script src="js/features/orders.js"></script>
+<script src="js/features/legal.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>
