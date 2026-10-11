@@ -1,0 +1,37 @@
+# ============================================================
+# Tramitá — Panel administrativo (public_html/admin/.htaccess)
+# La protección con contraseña de Hostinger ("Proteger directorios"
+# en hPanel) agrega sus propias líneas a este archivo: no las borre.
+# ============================================================
+
+Options -Indexes
+DirectoryIndex index.html
+
+# Forzar HTTPS
+RewriteEngine On
+RewriteCond %{HTTPS} !=on
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+<IfModule mod_headers.c>
+  # Que Google y otros buscadores nunca indexen el panel
+  Header always set X-Robots-Tag "noindex, nofollow"
+  Header always set Strict-Transport-Security "max-age=31536000"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "DENY"
+  Header always set Referrer-Policy "same-origin"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
+  # Igual que la web; object-src/frame-src permiten ver los PDF de comprobantes
+  # servidos por Supabase Storage.
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://kltpwbsdcdegrwegxhem.supabase.co; connect-src 'self' https://kltpwbsdcdegrwegxhem.supabase.co wss://kltpwbsdcdegrwegxhem.supabase.co; object-src https://kltpwbsdcdegrwegxhem.supabase.co; frame-src https://kltpwbsdcdegrwegxhem.supabase.co; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+
+  <FilesMatch "\.(html|css|js)$">
+    Header set Cache-Control "no-store"
+  </FilesMatch>
+</IfModule>
+
+<FilesMatch "(^\.|\.(md|sql|py|sh|zip|bak|log)$)">
+  Require all denied
+</FilesMatch>
+<Files ".htaccess">
+  Require all denied
+</Files>
