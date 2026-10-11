@@ -1,0 +1,22 @@
+/* ==================== BOTONES ==================== */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 14px 24px; border-radius: var(--radius);
+  font-weight: 500; font-size: 14.5px; letter-spacing: 0.01em;
+  transition: all .2s; cursor: pointer; border: 1px solid transparent;
+}
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-primary { background: var(--navy); color: var(--cream); }
+.btn-primary:hover:not(:disabled) { background: var(--navy-soft); }
+.btn-outline { background: transparent; color: var(--navy); border-color: var(--navy); }
+.btn-outline:hover:not(:disabled) { background: var(--navy); color: var(--cream); }
+.btn-ghost { background: transparent; color: var(--navy); }
+.btn-ghost:hover:not(:disabled) { background: var(--cream-warm); }
+.btn-bronze { background: var(--bronze); color: white; }
+.btn-bronze:hover:not(:disabled) { background: var(--bronze-light); }
+.btn-wa { background: #25D366; color: white; }
+.btn-wa:hover:not(:disabled) { background: #1DA851; }
+.btn-block { width: 100%; }
+.btn-sm { padding: 9px 16px; font-size: 13px; }
+.btn-lg { padding: 16px 28px; font-size: 15px; }
+

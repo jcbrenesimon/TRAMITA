@@ -1,0 +1,8 @@
+/* ==================== LAYOUT ==================== */
+.container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+.container-narrow { max-width: 720px; margin: 0 auto; padding: 0 20px; }
+
+.page { display: none; animation: fadeIn .3s ease; }
+.page.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+

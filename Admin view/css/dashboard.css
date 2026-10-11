@@ -1,0 +1,40 @@
+/* ============ DASHBOARD KPIs ============ */
+.kpi-grid {
+  display: grid; grid-template-columns: 1fr; gap: 12px;
+  margin-bottom: 24px;
+}
+@media (min-width: 600px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1100px) { .kpi-grid { grid-template-columns: repeat(4, 1fr); } }
+
+.kpi-card {
+  background: var(--paper); border: 1px solid var(--line);
+  border-radius: var(--radius-lg); padding: 18px 20px;
+  position: relative; overflow: hidden;
+}
+.kpi-card .label {
+  font-size: 11.5px; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--ink-subtle);
+  font-weight: 500; margin-bottom: 10px;
+}
+.kpi-card .value {
+  font-family: 'Fraunces', serif; font-weight: 500;
+  font-size: 30px; color: var(--navy);
+  letter-spacing: -0.025em; line-height: 1;
+}
+.kpi-card .hint {
+  font-size: 12px; color: var(--ink-subtle); margin-top: 6px;
+}
+.kpi-card.urgent { border-color: var(--warning); background: linear-gradient(to bottom, var(--warning-bg), var(--paper)); }
+.kpi-card.urgent .value { color: var(--warning); }
+.kpi-card.good { border-color: var(--success); }
+.kpi-card.good .value { color: var(--success); }
+
+.trend {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 12px; font-weight: 500;
+  padding: 2px 8px; border-radius: 100px;
+  margin-top: 6px;
+}
+.trend.up { background: var(--success-bg); color: var(--success); }
+.trend.down { background: var(--danger-bg); color: var(--danger); }
+

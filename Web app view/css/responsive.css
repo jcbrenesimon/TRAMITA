@@ -1,0 +1,16 @@
+/* ==================== RESPONSIVE ==================== */
+@media (min-width: 640px) {
+  .field-row { grid-template-columns: 1fr 1fr; }
+  .services-grid { grid-template-columns: repeat(2, 1fr); }
+  .benefits-grid { grid-template-columns: repeat(2, 1fr); }
+  .footer-top { grid-template-columns: 2fr 1fr 1fr; }
+  .user-name-short { display: inline; }
+}
+@media (min-width: 900px) {
+  .nav-links { display: flex; }
+  .menu-btn { display: none; }
+  .services-grid { grid-template-columns: repeat(3, 1fr); }
+  .benefits-grid { grid-template-columns: repeat(3, 1fr); }
+  .detail-layout { grid-template-columns: 1fr 360px; }
+  .footer-top { grid-template-columns: 2fr 1fr 1fr 1fr; }
+}

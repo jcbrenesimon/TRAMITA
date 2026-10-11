@@ -1,0 +1,149 @@
+/* ==================== NAV ==================== */
+.topbar {
+  background: var(--navy); color: var(--cream-warm);
+  font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 8px 20px; text-align: center; font-weight: 500;
+}
+.topbar .dot { color: var(--bronze-light); margin: 0 10px; }
+
+.nav {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--cream); border-bottom: 1px solid var(--line);
+  padding: 18px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  backdrop-filter: blur(8px);
+}
+.nav-scrolled { box-shadow: var(--shadow-sm); }
+.logo {
+  display: flex; align-items: center; gap: 10px;
+  font-family: 'Fraunces', serif; font-weight: 500;
+  font-size: 19px; letter-spacing: -0.02em; color: var(--navy); cursor: pointer;
+}
+.logo-mark {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--navy); color: var(--cream);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Fraunces', serif; font-weight: 600; font-size: 15px;
+}
+.logo em { font-style: italic; color: var(--bronze); }
+.nav-links { display: none; gap: 28px; font-size: 14px; font-weight: 500; }
+.nav-links a { color: var(--ink-muted); transition: color .2s; cursor: pointer; }
+.nav-links a:hover, .nav-links a.active { color: var(--navy); }
+.nav-actions { display: flex; align-items: center; gap: 10px; }
+.icon-btn {
+  position: relative;
+  width: 40px; height: 40px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--navy); transition: background .2s;
+}
+.icon-btn:hover { background: var(--cream-warm); }
+.cart-badge {
+  position: absolute; top: 4px; right: 4px;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--bronze); color: var(--cream);
+  font-size: 10px; font-weight: 600;
+  display: none; align-items: center; justify-content: center;
+}
+.cart-badge.show { display: flex; }
+.menu-btn { background: none; border: none; padding: 8px; }
+
+/* ==================== MENÚ USUARIO ==================== */
+.user-btn {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 10px 6px 6px; border-radius: 100px;
+  border: 1px solid var(--line); background: var(--paper);
+  cursor: pointer; transition: all .15s;
+  font-size: 14px; color: var(--navy); font-weight: 500;
+}
+.user-btn:hover { border-color: var(--navy-muted); background: var(--cream-warm); }
+.user-avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--navy); color: var(--cream);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Fraunces', serif; font-weight: 600; font-size: 13px;
+  flex-shrink: 0;
+}
+.user-name-short {
+  max-width: 120px; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+  display: none;
+}
+.user-dropdown {
+  position: absolute; top: calc(100% + 8px); right: 0;
+  background: var(--paper); border: 1px solid var(--line);
+  border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);
+  min-width: 240px; padding: 8px; z-index: 150;
+  opacity: 0; transform: translateY(-8px); pointer-events: none;
+  transition: all .2s;
+}
+.user-dropdown.open {
+  opacity: 1; transform: translateY(0); pointer-events: auto;
+}
+.user-dropdown-head {
+  padding: 12px 14px 14px; border-bottom: 1px solid var(--line-soft);
+  margin-bottom: 6px;
+}
+.user-name-full {
+  font-weight: 600; color: var(--navy);
+  font-size: 14.5px; margin-bottom: 2px;
+}
+.user-email {
+  font-size: 12.5px; color: var(--ink-subtle);
+  word-break: break-word;
+}
+.user-dropdown a {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; font-size: 14px;
+  color: var(--ink); cursor: pointer; border-radius: var(--radius);
+  transition: background .15s;
+}
+.user-dropdown a:hover { background: var(--cream-warm); }
+.user-dropdown-divider {
+  height: 1px; background: var(--line-soft);
+  margin: 6px 0;
+}
+
+/* Banner de usuario en menú mobile */
+.mobile-user-banner {
+  padding: 20px 24px; border-bottom: 1px solid var(--line);
+  background: var(--cream-warm);
+  display: flex; align-items: center; gap: 14px;
+}
+.user-avatar-lg {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: var(--navy); color: var(--cream);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Fraunces', serif; font-weight: 600; font-size: 20px;
+  flex-shrink: 0;
+}
+.mobile-user-name {
+  font-weight: 600; color: var(--navy);
+  font-size: 16px; margin-bottom: 2px;
+}
+.mobile-user-email {
+  font-size: 13px; color: var(--ink-subtle);
+  word-break: break-word;
+}
+
+.mobile-menu {
+  position: fixed; inset: 0; background: var(--cream);
+  z-index: 200; transform: translateX(100%); transition: transform .3s ease;
+  display: flex; flex-direction: column; overflow-y: auto;
+}
+.mobile-menu.open { transform: translateX(0); }
+.mobile-menu-head {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 18px 20px; border-bottom: 1px solid var(--line);
+}
+.mobile-menu-body { padding: 30px 24px; flex: 1; }
+.mobile-menu-body a {
+  display: block; font-family: 'Fraunces', serif;
+  font-size: 28px; padding: 14px 0;
+  border-bottom: 1px solid var(--line-soft);
+  color: var(--navy); letter-spacing: -0.02em; cursor: pointer;
+}
+.mobile-menu-foot {
+  padding: 24px; border-top: 1px solid var(--line);
+  display: flex; flex-direction: column; gap: 10px;
+}
+

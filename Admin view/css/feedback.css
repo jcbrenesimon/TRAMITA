@@ -1,0 +1,29 @@
+/* ============ LOADING / TOAST ============ */
+.spinner {
+  display: inline-block;
+  width: 16px; height: 16px;
+  border: 2px solid var(--cream);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.page-loading {
+  display: flex; align-items: center; justify-content: center;
+  padding: 60px 20px; color: var(--ink-subtle); gap: 10px;
+}
+.toast {
+  position: fixed; top: 20px; left: 50%;
+  transform: translateX(-50%) translateY(-120%);
+  background: var(--navy); color: var(--cream);
+  padding: 11px 18px; border-radius: var(--radius);
+  font-size: 13.5px; z-index: 300;
+  transition: transform .3s cubic-bezier(.2,.8,.2,1);
+  box-shadow: var(--shadow-lg);
+  display: flex; align-items: center; gap: 10px;
+  max-width: calc(100vw - 40px);
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+.toast.error { background: var(--danger); }
+.toast.success { background: var(--success); }
+
