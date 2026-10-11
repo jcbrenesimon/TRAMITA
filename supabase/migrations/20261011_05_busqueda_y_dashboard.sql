@@ -1,11 +1,6 @@
 -- ============================================================
--- Tramitá — 05: Búsqueda paginada en el servidor y dashboard en hora de Costa Rica
+-- Tramitá — 05: Búsqueda paginada y dashboard en hora de Costa Rica
 -- Fecha: 2026-10-11
---
--- H13/#19 admin_search_orders / admin_search_users: búsqueda, filtros y
---         paginación en la base de datos (antes: 200 órdenes / 500 usuarios
---         filtrados en el navegador).
--- #20     admin_dashboard_kpis: "hoy" y "este mes" en America/Costa_Rica.
 -- Idempotente.
 -- ============================================================
 BEGIN;

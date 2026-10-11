@@ -18,7 +18,6 @@ RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
   Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
   # Solo se permite cargar código de este sitio y de jsDelivr (supabase-js),
   # y solo se permite enviar datos a Supabase.
-  # 'unsafe-inline' en script-src es necesario mientras el HTML use onclick="...".
   Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://kltpwbsdcdegrwegxhem.supabase.co; connect-src 'self' https://kltpwbsdcdegrwegxhem.supabase.co wss://kltpwbsdcdegrwegxhem.supabase.co; object-src https://kltpwbsdcdegrwegxhem.supabase.co; frame-src https://kltpwbsdcdegrwegxhem.supabase.co; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
 
   # El HTML siempre se revisa; app.<hash>.css/js cambian de nombre en cada

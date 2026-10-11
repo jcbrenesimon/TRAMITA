@@ -1,18 +1,10 @@
 -- ============================================================
--- Tramitá — Datos del negocio 100% desde la base de datos
+-- Tramitá — Datos del negocio en settings
 -- Fecha: 2026-10-10
 --
--- 1. Unifica la clave de "combinar cupón + puntos" (hallazgo H4 del manual):
---    el admin guardaba allow_combine_coupon_points y la app pública leía
---    allow_combine_coupon_and_points. Queda solo allow_combine_coupon_and_points.
--- 2. Carga en settings los datos que antes estaban escritos en el código
---    (solo si no existen; no sobrescribe lo que ya esté configurado).
--- 3. Permite que visitantes sin sesión lean ÚNICAMENTE las claves públicas.
---    Cédula jurídica, bonos de referido y cualquier otra clave siguen
---    siendo solo para el equipo.
---
--- Idempotente: se puede ejecutar varias veces.
--- Ejecutar en Supabase → SQL Editor.
+-- Clave única para "combinar cupón + puntos", datos de contacto y
+-- estadísticas del inicio, y lectura pública de las claves no sensibles.
+-- Idempotente.
 -- ============================================================
 
 BEGIN;

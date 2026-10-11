@@ -1,2 +1,4 @@
 dist/
 node_modules/
+# Material interno (esquema completo, pruebas de seguridad, pendientes): nunca a GitHub
+privado/

@@ -1,16 +1,8 @@
 -- ============================================================
--- Tramitá — PARCHE DE EMERGENCIA (ejecutar primero)
+-- Tramitá — 01: Permisos de ejecución de las funciones admin_*
 -- Fecha: 2026-10-11
 --
--- Problema: las funciones admin_* validan permisos con
---   IF v_admin.role NOT IN ('admin','operador') THEN ...
--- Sin sesión, v_admin.role es NULL y la comparación da NULL (no TRUE),
--- así que la validación se salta. Cualquiera con la publishable key
--- podía crear administradores, darse puntos o aprobar comprobantes.
---
--- Este parche quita el permiso de ejecutar funciones admin_* a los
--- visitantes sin sesión (anon). La corrección de fondo de cada función
--- viene en la migración 02.
+-- Las funciones admin_* solo se pueden ejecutar con una sesión iniciada.
 -- Idempotente.
 -- ============================================================
 DO $$

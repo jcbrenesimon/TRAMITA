@@ -1,15 +1,9 @@
 -- ============================================================
--- Tramitá — 08: Corrige la subida de imágenes de servicios
+-- Tramitá — 08: Lectura pública de las imágenes de servicios
 -- Fecha: 2026-10-11
 --
--- Problema: la migración 07 creó el bucket "service-images" con permisos
--- de INSERT/UPDATE/DELETE para el admin, pero sin permiso de SELECT.
--- Storage inserta el archivo y lo lee de vuelta (INSERT ... RETURNING), y
--- Postgres exige que esa fila también pase una política de SELECT, así que
--- toda subida fallaba con "new row violates row-level security policy".
---
--- Las imágenes de servicios son públicas (se muestran en el catálogo), así
--- que cualquiera puede leerlas; solo el admin puede subir, cambiar o borrar.
+-- Las imágenes de servicios se muestran en el catálogo: cualquiera puede
+-- leerlas; solo el admin puede subirlas, cambiarlas o borrarlas.
 -- Idempotente.
 -- ============================================================
 BEGIN;

@@ -1,17 +1,12 @@
 -- ============================================================
--- Tramitá — 02: Permisos del equipo (corrección de fondo)
+-- Tramitá — 02: Permisos del equipo
 -- Fecha: 2026-10-11
 --
--- 1. staff_profile(roles): devuelve el perfil del usuario actual SOLO si
---    está activo, tiene uno de los roles indicados y (si está activada la
---    verificación en dos pasos del equipo) inició sesión con 2 factores.
---    En cualquier otro caso devuelve NULL. Reemplaza la validación
---    "v_admin.role NOT IN (...)", que dejaba pasar a usuarios sin sesión.
--- 2. current_user_role(): mismas reglas para las políticas RLS.
--- 3. Las funciones admin_* de catálogo, cuentas, cupones, configuración
---    y usuarios se recrean con la validación nueva; el resto de su lógica
---    queda igual. Las otras 11 admin_* las reescriben las migraciones
---    03, 04, 05 y 07 (ejecutar todas en orden, en la misma sesión).
+-- staff_profile(roles): perfil del usuario actual si está activo y tiene
+-- uno de los roles indicados. current_user_role(): mismas reglas para RLS.
+-- Las funciones admin_* de catálogo, cuentas, cupones, configuración y
+-- usuarios usan staff_profile(); las demás las definen las migraciones
+-- 03, 04, 05 y 07.
 -- Idempotente.
 -- ============================================================
 BEGIN;
@@ -55,7 +50,7 @@ END;
 $function$;
 
 -- Rol efectivo para RLS: NULL si no hay sesión, si la cuenta está
--- desactivada o si es del equipo y falta la verificación en dos pasos.
+-- desactivada, o según la configuración de verificación del equipo.
 CREATE OR REPLACE FUNCTION public.current_user_role()
  RETURNS user_role
  LANGUAGE sql

@@ -1,20 +1,11 @@
 -- ============================================================
--- Tramitá — 04: Órdenes, cupones, puntos y comprobantes en el servidor
+-- Tramitá — 04: Órdenes, cupones, puntos y comprobantes
 -- Fecha: 2026-10-11
 --
--- H1/#2   create_order(): precios, cupón, puntos y total se calculan en la
---         base de datos. El cliente ya no puede insertar órdenes ni items.
--- #6      validate_coupon(): el cliente valida cupones sin leer la tabla.
--- H5/#8   Cada uso de cupón se registra (coupon_redemptions + usage_count)
---         y se respetan el límite total y el límite por usuario.
--- H6/#9   Los puntos se descuentan al crear la orden (quedan reservados).
--- #11     Los precios salen de services, nunca del carrito del navegador.
--- #14     Toda la orden se crea en una sola transacción.
--- #7      Aprobar no vuelve a acreditar puntos si la orden ya está pagada.
--- #10     Cancelar devuelve los puntos canjeados, revierte los ganados y
---         libera el cupón; una orden pagada queda como reembolsada.
--- H10/#5  Comprobantes: estado, monto y método los fija el servidor; cada
---         cliente solo escribe y lee su propia carpeta de Storage.
+-- create_order() y validate_coupon(): precios, cupones, puntos y totales
+-- se calculan en la base de datos. Registro de usos de cupón, reserva y
+-- devolución de puntos, aprobación, rechazo y cancelación de órdenes,
+-- comprobantes y carpetas de Storage por cliente.
 -- Idempotente.
 -- ============================================================
 BEGIN;
@@ -128,7 +119,7 @@ BEGIN
 END;
 $function$;
 
--- ---------- H1: crear orden en el servidor ----------
+-- ---------- crear orden en el servidor ----------
 CREATE OR REPLACE FUNCTION public.create_order(
   p_items jsonb,
   p_payment_account_id integer,
@@ -263,7 +254,7 @@ DROP POLICY IF EXISTS pr_update ON public.payment_receipts;
 DROP POLICY IF EXISTS pl_insert ON public.points_ledger;
 DROP POLICY IF EXISTS cr_insert ON public.coupon_redemptions;
 
--- ---------- H10: comprobantes ----------
+-- ---------- comprobantes ----------
 CREATE OR REPLACE FUNCTION public.enforce_receipt_insert()
  RETURNS trigger
  LANGUAGE plpgsql

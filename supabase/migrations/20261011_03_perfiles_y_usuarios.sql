@@ -2,16 +2,9 @@
 -- Tramitá — 03: Perfiles, registro y usuarios del equipo
 -- Fecha: 2026-10-11
 --
--- H2  El cliente ya no puede cambiar su rol, puntos, código de referido,
---     referido por, estado ni correo (trigger protect_profile_columns).
--- H3  Se elimina la política que dejaba al operador editar cualquier
---     perfil; el equipo solo modifica perfiles mediante funciones admin_*.
--- #12 El registro guarda todos los datos desde el trigger (sin la espera
---     de 800 ms) y funciona con confirmación de correo.
--- #13 admin_create_user crea también la identity de Supabase Auth y se
---     reparan los usuarios existentes sin identity (operador@tramita.app).
--- #16 Contraseñas de mínimo 8 caracteres en las funciones del equipo.
--- #18 Registro de la aceptación de términos (terms_accepted_at).
+-- Columnas del perfil que solo cambian las funciones del sistema, registro
+-- completo desde los metadatos de Auth, creación de usuarios del equipo,
+-- contraseñas de mínimo 8 caracteres y aceptación de términos.
 -- Idempotente.
 -- ============================================================
 BEGIN;
@@ -19,11 +12,11 @@ BEGIN;
 ALTER TABLE public.users_profile ADD COLUMN IF NOT EXISTS terms_accepted_at timestamptz;
 
 -- ---------- Políticas de users_profile ----------
-DROP POLICY IF EXISTS up_update_staff ON public.users_profile;   -- H3
+DROP POLICY IF EXISTS up_update_staff ON public.users_profile;
 DROP POLICY IF EXISTS up_insert_admin ON public.users_profile;   -- perfiles los crea el trigger / RPC
 DROP POLICY IF EXISTS up_delete_admin ON public.users_profile;   -- borrado solo con admin_delete_user
 
--- ---------- H2: columnas protegidas ----------
+-- ---------- columnas protegidas ----------
 CREATE OR REPLACE FUNCTION public.protect_profile_columns()
  RETURNS trigger
  LANGUAGE plpgsql

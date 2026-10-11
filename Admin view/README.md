@@ -7,7 +7,6 @@ Cada vista vive en la URL (`#dashboard`, `#orders`, `#users`, `#settings`, `#err
 ## Seguridad
 
 - Los permisos reales están en la base de datos (`staff_profile()`, RLS); ocultar un botón en el panel es solo comodidad.
-- La verificación en dos pasos está desactivada por ahora. La base de datos ya la soporta (`settings.require_staff_mfa`); para activarla en el futuro hay que agregar la pantalla de código al panel y poner ese valor en `true`.
 
 ## Estructura
 

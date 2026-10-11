@@ -1,5 +1,5 @@
 // ============================================================
-// CREAR ORDEN (H1): todo se calcula y guarda en create_order()
+// CREAR ORDEN: todo se calcula y guarda en create_order()
 // ============================================================
 async function completeCheckout(e) {
   e.preventDefault();
